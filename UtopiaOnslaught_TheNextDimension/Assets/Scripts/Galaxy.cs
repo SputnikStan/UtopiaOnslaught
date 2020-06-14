@@ -17,29 +17,29 @@ public class Galaxy
         mStars = new List<Star>();
     }
 
-    public void Generate(int inSeed, int inNumberOfStars, float inGalaxyRadius)
+    public void Generate(int inSeed, int inNumberOfStars, Vector3 inGalaxyRadius, float inFlatness, Texture2D inStarColour)
     {
-        float StarsAtCenterRatio = inNumberOfStars;
+        StarColor = inStarColour;
+        float galaxyRadius = inGalaxyRadius.magnitude;
         mRandom = new GalaxyRandom(inSeed);
 
         mStars = new List<Star>();
 
         for (int i = 0; i < inNumberOfStars; i++)
         {
-            double part = (double)i / (double)inNumberOfStars;
-            part = System.Math.Pow(part, StarsAtCenterRatio);
-            float distanceFromCenter = (float)part;
 
-            float nucleusScale = distanceFromCenter * inGalaxyRadius;
-            Vector3 starPos = mRandom.InsideUnitSphere() * inGalaxyRadius;
-            starPos.y *= (float)Pow3Constrained(StarsAtCenterRatio);
+            Vector3 starPos = mRandom.InsideUnitSphere(true);
+
+            starPos.x *= inGalaxyRadius.x;
+            starPos.y *= inGalaxyRadius.y;
+            starPos.z *= inGalaxyRadius.z;
 
             Color starColor = Color.white;
             if (StarColor != null)
             {
 
-                float distanceFromArmCentre = (float)(1 / Vector3.Magnitude(starPos));
-                float fIndex = (float)mRandom.NextDouble() * distanceFromArmCentre;
+                float distanceFromCentre = starPos.magnitude;
+                float fIndex = ((distanceFromCentre / galaxyRadius) * (float)StarColor.width);
                 int colorIndex = (int)Mathf.Clamp(fIndex, 0, (float)StarColor.width);
 
                 starColor = StarColor.GetPixel(colorIndex, 0);

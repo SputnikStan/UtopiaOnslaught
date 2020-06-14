@@ -152,6 +152,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mStarColorGradient: {fileID: 2800000, guid: 9cc12debdd72cbe4aaaf035f545770a5, type: 3}
   mGalaxyParticles: {fileID: 2069276923}
+  Seed: 6666
+  NumberOfStars: 10000
+  Dimensions: {x: 100, y: 25, z: 100}
+  Flatness: 2
+  LineMaterial: {fileID: 2100000, guid: 1db76eeb84439db4ca5976617e52ee10, type: 2}
 --- !u!4 &572867000
 Transform:
   m_ObjectHideFlags: 0
@@ -309,7 +314,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 1000
+  far clip plane: 10000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -336,7 +341,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0, y: 1, z: 9.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

@@ -47,7 +47,7 @@ public class Star
         for (int i = 0; i < MAX_NAMELENGTH; i++) mName[i] = _Name[i];
         mName[MAX_NAMELENGTH] = STRING_TERMINATOR;
 
-        mPosition = _Position;
+        mPosition = new Vector3(_Position.x, _Position.z, _Position.y);
         mColour = _Color;
 
         mSolarObjects = Generate_SolarSystem();

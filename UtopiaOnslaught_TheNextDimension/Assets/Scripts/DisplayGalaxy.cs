@@ -12,6 +12,10 @@ public class BoundingBox
     Vector3[] Quadrant2 = new Vector3[8];
     Vector3[] Quadrant3 = new Vector3[8];
     Vector3[] Quadrant4 = new Vector3[8];
+    Vector3[] Quadrant5 = new Vector3[8];
+    Vector3[] Quadrant6 = new Vector3[8];
+    Vector3[] Quadrant7 = new Vector3[8];
+    Vector3[] Quadrant8 = new Vector3[8];
 
     Vector3 CentreTop;
     Vector3 CentreMiddle;
@@ -47,6 +51,10 @@ public class BoundingBox
         Quadrant2 = CalculateQuadrant2(Bounds);
         Quadrant3 = CalculateQuadrant3(Bounds);
         Quadrant4 = CalculateQuadrant4(Bounds);
+        Quadrant5 = CalculateQuadrant5(Bounds);
+        Quadrant6 = CalculateQuadrant6(Bounds);
+        Quadrant7 = CalculateQuadrant7(Bounds);
+        Quadrant8 = CalculateQuadrant8(Bounds);
     }
 
     /// <summary>
@@ -60,6 +68,10 @@ public class BoundingBox
         DrawBox(Quadrant2, Color.green);
         DrawBox(Quadrant3, Color.green);
         DrawBox(Quadrant4, Color.green);
+        DrawBox(Quadrant5, Color.green);
+        DrawBox(Quadrant6, Color.green);
+        DrawBox(Quadrant7, Color.green);
+        DrawBox(Quadrant8, Color.green);
     }
 
     /// <summary>
@@ -93,10 +105,10 @@ public class BoundingBox
         quadrant[(int)BOXCORNERS.corner3] = CentreTop;
         quadrant[(int)BOXCORNERS.corner4] = CalcCentrePoint(Bounds[(int)BOXCORNERS.corner4], Bounds[(int)BOXCORNERS.corner1]);
 
-        quadrant[(int)BOXCORNERS.corner5] = new Vector3(quadrant[(int)BOXCORNERS.corner1].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner1].z);
-        quadrant[(int)BOXCORNERS.corner6] = new Vector3(quadrant[(int)BOXCORNERS.corner2].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner2].z);
-        quadrant[(int)BOXCORNERS.corner7] = new Vector3(quadrant[(int)BOXCORNERS.corner3].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner3].z);
-        quadrant[(int)BOXCORNERS.corner8] = new Vector3(quadrant[(int)BOXCORNERS.corner4].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner4].z);
+        quadrant[(int)BOXCORNERS.corner5] = new Vector3(quadrant[(int)BOXCORNERS.corner1].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner1].z);
+        quadrant[(int)BOXCORNERS.corner6] = new Vector3(quadrant[(int)BOXCORNERS.corner2].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner2].z);
+        quadrant[(int)BOXCORNERS.corner7] = new Vector3(quadrant[(int)BOXCORNERS.corner3].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner3].z);
+        quadrant[(int)BOXCORNERS.corner8] = new Vector3(quadrant[(int)BOXCORNERS.corner4].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner4].z);
 
         return quadrant;
     }
@@ -115,10 +127,10 @@ public class BoundingBox
         quadrant[(int)BOXCORNERS.corner3] = CalcCentrePoint(Bounds[(int)BOXCORNERS.corner2], Bounds[(int)BOXCORNERS.corner3]);
         quadrant[(int)BOXCORNERS.corner4] = CentreTop;
 
-        quadrant[(int)BOXCORNERS.corner5] = new Vector3(quadrant[(int)BOXCORNERS.corner1].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner1].z);
-        quadrant[(int)BOXCORNERS.corner6] = new Vector3(quadrant[(int)BOXCORNERS.corner2].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner2].z);
-        quadrant[(int)BOXCORNERS.corner7] = new Vector3(quadrant[(int)BOXCORNERS.corner3].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner3].z);
-        quadrant[(int)BOXCORNERS.corner8] = new Vector3(quadrant[(int)BOXCORNERS.corner4].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner4].z);
+        quadrant[(int)BOXCORNERS.corner5] = new Vector3(quadrant[(int)BOXCORNERS.corner1].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner1].z);
+        quadrant[(int)BOXCORNERS.corner6] = new Vector3(quadrant[(int)BOXCORNERS.corner2].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner2].z);
+        quadrant[(int)BOXCORNERS.corner7] = new Vector3(quadrant[(int)BOXCORNERS.corner3].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner3].z);
+        quadrant[(int)BOXCORNERS.corner8] = new Vector3(quadrant[(int)BOXCORNERS.corner4].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner4].z);
 
         return quadrant;
     }
@@ -137,10 +149,10 @@ public class BoundingBox
         quadrant[(int)BOXCORNERS.corner3] = CalcCentrePoint(Bounds[(int)BOXCORNERS.corner3], Bounds[(int)BOXCORNERS.corner4]);
         quadrant[(int)BOXCORNERS.corner4] = CentreTop;
 
-        quadrant[(int)BOXCORNERS.corner5] = new Vector3(quadrant[(int)BOXCORNERS.corner1].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner1].z);
-        quadrant[(int)BOXCORNERS.corner6] = new Vector3(quadrant[(int)BOXCORNERS.corner2].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner2].z);
-        quadrant[(int)BOXCORNERS.corner7] = new Vector3(quadrant[(int)BOXCORNERS.corner3].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner3].z);
-        quadrant[(int)BOXCORNERS.corner8] = new Vector3(quadrant[(int)BOXCORNERS.corner4].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner4].z);
+        quadrant[(int)BOXCORNERS.corner5] = new Vector3(quadrant[(int)BOXCORNERS.corner1].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner1].z);
+        quadrant[(int)BOXCORNERS.corner6] = new Vector3(quadrant[(int)BOXCORNERS.corner2].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner2].z);
+        quadrant[(int)BOXCORNERS.corner7] = new Vector3(quadrant[(int)BOXCORNERS.corner3].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner3].z);
+        quadrant[(int)BOXCORNERS.corner8] = new Vector3(quadrant[(int)BOXCORNERS.corner4].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner4].z);
 
         return quadrant;
     }
@@ -158,6 +170,106 @@ public class BoundingBox
         quadrant[(int)BOXCORNERS.corner2] = CentreTop;
         quadrant[(int)BOXCORNERS.corner3] = CalcCentrePoint(Bounds[(int)BOXCORNERS.corner3], Bounds[(int)BOXCORNERS.corner4]);
         quadrant[(int)BOXCORNERS.corner4] = Bounds[(int)BOXCORNERS.corner4];
+
+        quadrant[(int)BOXCORNERS.corner5] = new Vector3(quadrant[(int)BOXCORNERS.corner1].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner1].z);
+        quadrant[(int)BOXCORNERS.corner6] = new Vector3(quadrant[(int)BOXCORNERS.corner2].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner2].z);
+        quadrant[(int)BOXCORNERS.corner7] = new Vector3(quadrant[(int)BOXCORNERS.corner3].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner3].z);
+        quadrant[(int)BOXCORNERS.corner8] = new Vector3(quadrant[(int)BOXCORNERS.corner4].x, CentreMiddle.y, quadrant[(int)BOXCORNERS.corner4].z);
+
+        return quadrant;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="points"></param>
+    /// <returns></returns>
+    public Vector3[] CalculateQuadrant5(Vector3[] points)
+    {
+        Vector3[] quadrant = new Vector3[8];
+
+        quadrant[(int)BOXCORNERS.corner1] = Bounds[(int)BOXCORNERS.corner1];
+        quadrant[(int)BOXCORNERS.corner1].y = CentreMiddle.y;
+        quadrant[(int)BOXCORNERS.corner2] = CalcCentrePoint(Bounds[(int)BOXCORNERS.corner1], Bounds[(int)BOXCORNERS.corner2]);
+        quadrant[(int)BOXCORNERS.corner2].y = CentreMiddle.y;
+        quadrant[(int)BOXCORNERS.corner3] = CentreMiddle;
+        quadrant[(int)BOXCORNERS.corner4] = CalcCentrePoint(Bounds[(int)BOXCORNERS.corner4], Bounds[(int)BOXCORNERS.corner1]);
+        quadrant[(int)BOXCORNERS.corner4].y = CentreMiddle.y;
+
+        quadrant[(int)BOXCORNERS.corner5] = new Vector3(quadrant[(int)BOXCORNERS.corner1].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner1].z);
+        quadrant[(int)BOXCORNERS.corner6] = new Vector3(quadrant[(int)BOXCORNERS.corner2].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner2].z);
+        quadrant[(int)BOXCORNERS.corner7] = new Vector3(quadrant[(int)BOXCORNERS.corner3].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner3].z);
+        quadrant[(int)BOXCORNERS.corner8] = new Vector3(quadrant[(int)BOXCORNERS.corner4].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner4].z);
+
+        return quadrant;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="points"></param>
+    /// <returns></returns>
+    public Vector3[] CalculateQuadrant6(Vector3[] points)
+    {
+        Vector3[] quadrant = new Vector3[8];
+
+        quadrant[(int)BOXCORNERS.corner1] = CalcCentrePoint(Bounds[(int)BOXCORNERS.corner1], Bounds[(int)BOXCORNERS.corner2]);
+        quadrant[(int)BOXCORNERS.corner1].y = CentreMiddle.y;
+        quadrant[(int)BOXCORNERS.corner2] = Bounds[(int)BOXCORNERS.corner2];
+        quadrant[(int)BOXCORNERS.corner2].y = CentreMiddle.y;
+        quadrant[(int)BOXCORNERS.corner3] = CalcCentrePoint(Bounds[(int)BOXCORNERS.corner2], Bounds[(int)BOXCORNERS.corner3]);
+        quadrant[(int)BOXCORNERS.corner3].y = CentreMiddle.y;
+        quadrant[(int)BOXCORNERS.corner4] = CentreMiddle;
+
+        quadrant[(int)BOXCORNERS.corner5] = new Vector3(quadrant[(int)BOXCORNERS.corner1].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner1].z);
+        quadrant[(int)BOXCORNERS.corner6] = new Vector3(quadrant[(int)BOXCORNERS.corner2].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner2].z);
+        quadrant[(int)BOXCORNERS.corner7] = new Vector3(quadrant[(int)BOXCORNERS.corner3].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner3].z);
+        quadrant[(int)BOXCORNERS.corner8] = new Vector3(quadrant[(int)BOXCORNERS.corner4].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner4].z);
+
+        return quadrant;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="points"></param>
+    /// <returns></returns>
+    public Vector3[] CalculateQuadrant7(Vector3[] points)
+    {
+        Vector3[] quadrant = new Vector3[8];
+
+        quadrant[(int)BOXCORNERS.corner1] = CalcCentrePoint(Bounds[(int)BOXCORNERS.corner2], Bounds[(int)BOXCORNERS.corner3]);
+        quadrant[(int)BOXCORNERS.corner1].y = CentreMiddle.y;
+        quadrant[(int)BOXCORNERS.corner2] = Bounds[(int)BOXCORNERS.corner3];
+        quadrant[(int)BOXCORNERS.corner2].y = CentreMiddle.y;
+        quadrant[(int)BOXCORNERS.corner3] = CalcCentrePoint(Bounds[(int)BOXCORNERS.corner3], Bounds[(int)BOXCORNERS.corner4]);
+        quadrant[(int)BOXCORNERS.corner3].y = CentreMiddle.y;
+        quadrant[(int)BOXCORNERS.corner4] = CentreMiddle;
+
+        quadrant[(int)BOXCORNERS.corner5] = new Vector3(quadrant[(int)BOXCORNERS.corner1].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner1].z);
+        quadrant[(int)BOXCORNERS.corner6] = new Vector3(quadrant[(int)BOXCORNERS.corner2].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner2].z);
+        quadrant[(int)BOXCORNERS.corner7] = new Vector3(quadrant[(int)BOXCORNERS.corner3].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner3].z);
+        quadrant[(int)BOXCORNERS.corner8] = new Vector3(quadrant[(int)BOXCORNERS.corner4].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner4].z);
+
+        return quadrant;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="points"></param>
+    /// <returns></returns>
+    public Vector3[] CalculateQuadrant8(Vector3[] points)
+    {
+        Vector3[] quadrant = new Vector3[8];
+
+        quadrant[(int)BOXCORNERS.corner1] = CalcCentrePoint(Bounds[(int)BOXCORNERS.corner4], Bounds[(int)BOXCORNERS.corner1]);
+        quadrant[(int)BOXCORNERS.corner1].y = CentreMiddle.y;
+        quadrant[(int)BOXCORNERS.corner2] = CentreMiddle;
+        quadrant[(int)BOXCORNERS.corner3] = CalcCentrePoint(Bounds[(int)BOXCORNERS.corner3], Bounds[(int)BOXCORNERS.corner4]);
+        quadrant[(int)BOXCORNERS.corner3].y = CentreMiddle.y;
+        quadrant[(int)BOXCORNERS.corner4] = Bounds[(int)BOXCORNERS.corner4];
+        quadrant[(int)BOXCORNERS.corner4].y = CentreMiddle.y;
 
         quadrant[(int)BOXCORNERS.corner5] = new Vector3(quadrant[(int)BOXCORNERS.corner1].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner1].z);
         quadrant[(int)BOXCORNERS.corner6] = new Vector3(quadrant[(int)BOXCORNERS.corner2].x, CentreBottom.y, quadrant[(int)BOXCORNERS.corner2].z);
@@ -214,6 +326,96 @@ public class BoundingBox
     }
 }
 
+public class GalaxyTree
+{
+    private Vector3 Position = Vector3.zero;
+    private Vector3 Size = Vector3.zero;
+
+    private List<GalaxyBranch> GalaxyBranches;
+}
+
+public class GalaxyBranch
+{
+    private Vector3 Position = Vector3.zero;
+    private Vector3 Size = Vector3.zero;
+
+    private List<GalaxyLeaf> GalaxyLeafs;
+}
+
+public class GalaxyLeaf
+{
+    public Material LineMaterial;
+    private Vector3[] Bounds = new Vector3[8];
+    private List<GameObject> LineObjects;
+
+    public GalaxyLeaf(Vector3 position, Vector3 dimensions, Material lineMaterial)
+    {
+        LineObjects = new List<GameObject>();
+
+        LineMaterial = lineMaterial;
+
+        Bounds[(int)BOXCORNERS.corner1] = position + new Vector3(dimensions.x, dimensions.y, dimensions.z);
+        Bounds[(int)BOXCORNERS.corner2] = position + new Vector3(dimensions.x, dimensions.y, -dimensions.z);
+        Bounds[(int)BOXCORNERS.corner3] = position + new Vector3(-dimensions.x, dimensions.y, -dimensions.z);
+        Bounds[(int)BOXCORNERS.corner4] = position + new Vector3(-dimensions.x, dimensions.y, dimensions.z);
+
+        Bounds[(int)BOXCORNERS.corner5] = position + new Vector3(dimensions.x, -dimensions.y, dimensions.z);
+        Bounds[(int)BOXCORNERS.corner6] = position + new Vector3(dimensions.x, -dimensions.y, -dimensions.z);
+        Bounds[(int)BOXCORNERS.corner7] = position + new Vector3(-dimensions.x, -dimensions.y, -dimensions.z);
+        Bounds[(int)BOXCORNERS.corner8] = position + new Vector3(-dimensions.x, -dimensions.y, dimensions.z);
+
+        CreateBounds(Bounds, Color.green);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="points"></param>
+    /// <param name="color"></param>
+    void CreateBounds(Vector3[] points, Color color)
+    {
+        LineObjects.Add(CreateLine(points[(int)BOXCORNERS.corner1], points[(int)BOXCORNERS.corner2], color));
+        LineObjects.Add(CreateLine(points[(int)BOXCORNERS.corner2], points[(int)BOXCORNERS.corner3], color));
+        LineObjects.Add(CreateLine(points[(int)BOXCORNERS.corner3], points[(int)BOXCORNERS.corner4], color));
+        LineObjects.Add(CreateLine(points[(int)BOXCORNERS.corner4], points[(int)BOXCORNERS.corner1], color));
+
+        LineObjects.Add(CreateLine(points[(int)BOXCORNERS.corner5], points[(int)BOXCORNERS.corner6], color));
+        LineObjects.Add(CreateLine(points[(int)BOXCORNERS.corner6], points[(int)BOXCORNERS.corner7], color));
+        LineObjects.Add(CreateLine(points[(int)BOXCORNERS.corner7], points[(int)BOXCORNERS.corner8], color));
+        LineObjects.Add(CreateLine(points[(int)BOXCORNERS.corner8], points[(int)BOXCORNERS.corner5], color));
+
+        LineObjects.Add(CreateLine(points[(int)BOXCORNERS.corner1], points[(int)BOXCORNERS.corner5], color));
+        LineObjects.Add(CreateLine(points[(int)BOXCORNERS.corner2], points[(int)BOXCORNERS.corner6], color));
+        LineObjects.Add(CreateLine(points[(int)BOXCORNERS.corner3], points[(int)BOXCORNERS.corner7], color));
+        LineObjects.Add(CreateLine(points[(int)BOXCORNERS.corner4], points[(int)BOXCORNERS.corner8], color));
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="end"></param>
+    /// <param name="color"></param>
+    private GameObject CreateLine(Vector3 start, Vector3 end, Color color)
+    {
+        //Debug.DrawLine(start, end, color);
+
+        GameObject myLine = new GameObject();
+        myLine.transform.position = start;
+        myLine.AddComponent<LineRenderer>();
+        LineRenderer lr = myLine.GetComponent<LineRenderer>();
+        lr.material = LineMaterial;
+        lr.startColor = color;
+        lr.endColor = color;
+        lr.startWidth = 0.5f;
+        lr.endWidth = 0.5f;
+        lr.SetPosition(0, start);
+        lr.SetPosition(1, end);
+
+        return myLine;
+    }
+}
+
 public class DisplayGalaxy : MonoBehaviour
 {
     public Texture2D mStarColorGradient;
@@ -227,6 +429,7 @@ public class DisplayGalaxy : MonoBehaviour
 
     private Vector3 Offsets = Vector3.zero;
     private Vector3 Radius = Vector3.zero;
+    private Vector3 GalaxySize = Vector3.zero;
 
     private BoundingBox Bounds;
 
@@ -241,14 +444,14 @@ public class DisplayGalaxy : MonoBehaviour
         RoundedDimension.z = Mathf.Pow(2, Mathf.Ceil(Mathf.Log(Dimensions.z) / Mathf.Log(2)));
         Dimensions = RoundedDimension;
 
-        Offsets = new Vector3((RoundedDimension.x / 2), (RoundedDimension.y / 2), (RoundedDimension.z / 2));
         Radius = RoundedDimension / 2;
 
         mGalaxy.Generate(Seed, NumberOfStars, Radius, 1, mStarColorGradient);
 
         RenderGalaxy();
 
-        Bounds = new BoundingBox(transform.position, Offsets, LineMaterial);
+        GalaxySize = new Vector3(GetMax(Radius), GetMax(Radius), GetMax(Radius));
+        Bounds = new BoundingBox(transform.position, GalaxySize, LineMaterial);
 
         Bounds.DrawBounds();
     }
@@ -275,5 +478,10 @@ public class DisplayGalaxy : MonoBehaviour
         }
 
 
+    }
+
+    public float GetMax(Vector3 v3)
+    {
+        return Mathf.Max(Mathf.Max(v3.x, v3.y), v3.z);
     }
 }

@@ -19,6 +19,11 @@ public class Star
         set { mPosition = value; }
     }
 
+    public Vector3 ParticlePosition
+    {
+        get { return new Vector3(mPosition.x, mPosition.z, mPosition.y); }
+    }
+
     public string Name
     {
         get { return mName.ToString(); }
@@ -47,7 +52,7 @@ public class Star
         for (int i = 0; i < MAX_NAMELENGTH; i++) mName[i] = _Name[i];
         mName[MAX_NAMELENGTH] = STRING_TERMINATOR;
 
-        mPosition = new Vector3(_Position.x, _Position.z, _Position.y);
+        mPosition = new Vector3(_Position.x, _Position.y, _Position.z);
         mColour = _Color;
 
         mSolarObjects = Generate_SolarSystem();

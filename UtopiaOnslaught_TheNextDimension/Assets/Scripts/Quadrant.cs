@@ -13,7 +13,7 @@ public class Quadrant
 
     private List<Sector> Sectors;
 
-    public Quadrant(Galaxy inGalaxy, Transform parent, Vector3 inPosition, Vector3 inSize, Material inLineMaterial, int inLevel)
+    public Quadrant(Galaxy inGalaxy, Transform parent, Vector3 inPosition, float inSize, Material inLineMaterial, int inLevel)
     {
         Color[] quadrantColors = { Color.green, Color.yellow, Color.blue, Color.red, Color.cyan };
 
@@ -21,9 +21,9 @@ public class Quadrant
         quadrantObject.transform.parent = parent;
 
         Position = inPosition;
-        Size = inSize;
+        Size = new Vector3(inSize, inSize, inSize);
 
-        Bounds = GalaxyHelpers.CalculateBounds(inPosition, inSize);
+        Bounds = GalaxyHelpers.CalculateBounds(inPosition, Size);
 
         if(inLevel == 0)
         {
@@ -31,17 +31,17 @@ public class Quadrant
         }
 
 
-        Vector3 sectorSize = Size / 2;
+        float sectorSize = inSize / 2;
 
-        Vector3 position1 = new Vector3(Position.x - sectorSize.x, Position.y + sectorSize.y, Position.z - sectorSize.z);
-        Vector3 position2 = new Vector3(Position.x + sectorSize.x, Position.y + sectorSize.y, Position.z - sectorSize.z);
-        Vector3 position3 = new Vector3(Position.x + sectorSize.x, Position.y + sectorSize.y, Position.z + sectorSize.z);
-        Vector3 position4 = new Vector3(Position.x - sectorSize.x, Position.y + sectorSize.y, Position.z + sectorSize.z);
+        Vector3 position1 = new Vector3(Position.x - sectorSize, Position.y + sectorSize, Position.z - sectorSize);
+        Vector3 position2 = new Vector3(Position.x + sectorSize, Position.y + sectorSize, Position.z - sectorSize);
+        Vector3 position3 = new Vector3(Position.x + sectorSize, Position.y + sectorSize, Position.z + sectorSize);
+        Vector3 position4 = new Vector3(Position.x - sectorSize, Position.y + sectorSize, Position.z + sectorSize);
 
-        Vector3 position5 = new Vector3(Position.x - sectorSize.x, Position.y - sectorSize.y, Position.z - sectorSize.z);
-        Vector3 position6 = new Vector3(Position.x + sectorSize.x, Position.y - sectorSize.y, Position.z - sectorSize.z);
-        Vector3 position7 = new Vector3(Position.x + sectorSize.x, Position.y - sectorSize.y, Position.z + sectorSize.z);
-        Vector3 position8 = new Vector3(Position.x - sectorSize.x, Position.y - sectorSize.y, Position.z + sectorSize.z);
+        Vector3 position5 = new Vector3(Position.x - sectorSize, Position.y - sectorSize, Position.z - sectorSize);
+        Vector3 position6 = new Vector3(Position.x + sectorSize, Position.y - sectorSize, Position.z - sectorSize);
+        Vector3 position7 = new Vector3(Position.x + sectorSize, Position.y - sectorSize, Position.z + sectorSize);
+        Vector3 position8 = new Vector3(Position.x - sectorSize, Position.y - sectorSize, Position.z + sectorSize);
 
         if (inLevel == (int)(GALAXYDEFINES.SECTOREDEPTH - 1))
         {

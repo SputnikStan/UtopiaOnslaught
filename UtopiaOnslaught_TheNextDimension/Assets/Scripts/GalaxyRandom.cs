@@ -80,4 +80,9 @@ public class GalaxyRandom
     {
         return sm_Rand.NextDouble();
     }
+
+    public float Next()
+    {
+        return (float)sm_Rand.NextDouble();
+    }
 }

@@ -75,4 +75,9 @@ public static class GalaxyHelpers
 
         return myLine;
     }
+
+    public static  float GetMax(Vector3 v3)
+    {
+        return Mathf.Max(Mathf.Max(v3.x, v3.y), v3.z);
+    }
 }

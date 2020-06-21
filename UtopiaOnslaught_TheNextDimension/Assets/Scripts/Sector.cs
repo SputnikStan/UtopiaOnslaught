@@ -11,8 +11,9 @@ public class Sector
     private Bounds boundingBox;
     private List<Star> mStars;
 
-    public Sector(Galaxy inGalaxy, Transform parent, Vector3 inPosition, Vector3 inDimensions, Material inLineMaterial)
+    public Sector(Galaxy inGalaxy, Transform parent, Vector3 inPosition, float inDimension, Material inLineMaterial)
     {
+        Vector3 DimensionV = new Vector3(inDimension, inDimension, inDimension);
         GameObject sectorObject = new GameObject($"Sector X{inPosition.x}-Y{inPosition.y}-z{inPosition.z}");
         sectorObject.transform.parent = parent;
 
@@ -23,17 +24,17 @@ public class Sector
         boundingBox = new Bounds
         {
             center = inPosition,
-            extents = (inDimensions / 2),
-            max = (inPosition + (inDimensions / 2)),
-            min = (inPosition - (inDimensions / 2)),
-            size = inDimensions
+            extents = (DimensionV / 2),
+            max = (inPosition + (DimensionV / 2)),
+            min = (inPosition - (DimensionV / 2)),
+            size = DimensionV
         };
 
         mStars = GetStars(inGalaxy);
 
         if(mStars.Count > 0)
         {
-            BoundingPoints = GalaxyHelpers.CalculateBounds(inPosition, inDimensions);
+            BoundingPoints = GalaxyHelpers.CalculateBounds(inPosition, DimensionV);
             LineObjects = GalaxyHelpers.CreateBox(sectorObject.transform, BoundingPoints, inLineMaterial, Color.grey);
         }
     }

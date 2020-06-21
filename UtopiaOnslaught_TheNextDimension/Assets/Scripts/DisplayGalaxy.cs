@@ -4,6 +4,7 @@ using UnityEngine;
 
 enum BOXCORNERS:int { corner1 = 0, corner2, corner3, corner4, corner5, corner6, corner7, corner8 };
 enum GALAXYDEFINES : int { SECTOREDEPTH = 3};
+public enum GALXAYTYPES : int { Spherical = 0, Spiral, Sombrero, Eliptical };
 
 public class DisplayGalaxy : MonoBehaviour
 {
@@ -12,10 +13,10 @@ public class DisplayGalaxy : MonoBehaviour
     public ParticleSystem mGalaxyParticles;
     public int Seed = 6666;
     public int NumberOfStars = 1000;
-    public Vector3 Dimensions = new Vector3(1024, 1024, 1024);
-    public float Flatness = 10.0f;
+    public float Dimensions = 1024;
+    public float Flatness = 10.0f;  // Percentage of Y
     public Material LineMaterial;
-
+    public GALXAYTYPES GalaxyType = GALXAYTYPES.Spherical;
     private Vector3 Offsets = Vector3.zero;
     private Vector3 Radius = Vector3.zero;
     private Vector3 GalaxySize = Vector3.zero;
@@ -26,19 +27,12 @@ public class DisplayGalaxy : MonoBehaviour
     {
         mGalaxy = new Galaxy();
 
-        Vector3 RoundedDimension = Vector3.zero;
-        RoundedDimension.x = Mathf.Pow(2, Mathf.Ceil(Mathf.Log(Dimensions.x) / Mathf.Log(2)));
-        RoundedDimension.y = Mathf.Pow(2, Mathf.Ceil(Mathf.Log(Dimensions.y) / Mathf.Log(2)));
-        RoundedDimension.z = Mathf.Pow(2, Mathf.Ceil(Mathf.Log(Dimensions.z) / Mathf.Log(2)));
-        Dimensions = RoundedDimension;
+        float RoundedDimension = Mathf.Pow(2, Mathf.Ceil(Mathf.Log(Dimensions) / Mathf.Log(2)));
+        float Radius = RoundedDimension / 2;
 
-        Radius = RoundedDimension / 2;
+        mGalaxy.Generate(Seed, GalaxyType, NumberOfStars, Radius, Flatness, mStarColorGradient);
 
-        mGalaxy.Generate(Seed, NumberOfStars, Radius, 1, mStarColorGradient);
-
-        GalaxySize = new Vector3(GetMax(Radius), GetMax(Radius), GetMax(Radius));
-
-        GalaxyBounds = new Quadrant(mGalaxy, transform, transform.position, GalaxySize, LineMaterial, 0);
+        GalaxyBounds = new Quadrant(mGalaxy, transform, transform.position, Radius, LineMaterial, 0);
 
         RenderGalaxy();
     }
@@ -67,8 +61,5 @@ public class DisplayGalaxy : MonoBehaviour
 
     }
 
-    public float GetMax(Vector3 v3)
-    {
-        return Mathf.Max(Mathf.Max(v3.x, v3.y), v3.z);
-    }
+
 }

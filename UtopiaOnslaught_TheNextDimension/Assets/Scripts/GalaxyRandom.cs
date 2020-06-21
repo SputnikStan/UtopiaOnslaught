@@ -66,12 +66,12 @@ public class GalaxyRandom
         return normal;  
     }
 
-    float Range(float a, float b)
+    public float Range(float a, float b)
     {
         return (float)(a + sm_Rand.NextDouble() * (b - a));
     }
 
-    double Range(double a, double b)
+    public double Range(double a, double b)
     {
         return a + sm_Rand.NextDouble() * (b - a);
     }

@@ -154,8 +154,9 @@ MonoBehaviour:
   mGalaxyParticles: {fileID: 2069276923}
   Seed: 6666
   NumberOfStars: 10000
+  NumberOfArms: 4
   Dimensions: 100
-  Flatness: 50
+  Flatness: 25
   LineMaterial: {fileID: 2100000, guid: 1db76eeb84439db4ca5976617e52ee10, type: 2}
   GalaxyType: 1
 --- !u!4 &572867000

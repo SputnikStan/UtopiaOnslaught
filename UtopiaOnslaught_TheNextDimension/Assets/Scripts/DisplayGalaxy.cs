@@ -13,6 +13,7 @@ public class DisplayGalaxy : MonoBehaviour
     public ParticleSystem mGalaxyParticles;
     public int Seed = 6666;
     public int NumberOfStars = 1000;
+    public int NumberOfArms = 2;
     public float Dimensions = 1024;
     public float Flatness = 10.0f;  // Percentage of Y
     public Material LineMaterial;
@@ -30,9 +31,9 @@ public class DisplayGalaxy : MonoBehaviour
         float RoundedDimension = Mathf.Pow(2, Mathf.Ceil(Mathf.Log(Dimensions) / Mathf.Log(2)));
         float Radius = RoundedDimension / 2;
 
-        mGalaxy.Generate(Seed, GalaxyType, NumberOfStars, Radius, Flatness, mStarColorGradient);
+        mGalaxy.Generate(Seed, GalaxyType, NumberOfStars, Radius, Flatness, mStarColorGradient, NumberOfArms);
 
-        GalaxyBounds = new Quadrant(mGalaxy, transform, transform.position, Radius, LineMaterial, 0);
+       // GalaxyBounds = new Quadrant(mGalaxy, transform, transform.position, Radius, LineMaterial, 0);
 
         RenderGalaxy();
     }

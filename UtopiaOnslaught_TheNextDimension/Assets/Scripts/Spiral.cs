@@ -18,7 +18,7 @@ public class Spiral : GalaxyType
     override public void Generate(List<Star> inStars, int inNumberOfStars, Vector3 inGalaxyRadius, Texture2D inStarColour, int inNumberOfArms = 0)
     {
         float _rotationFactor = 3f;
-        float _ArmsSpread = 1.5f;
+        float _ArmsSpread = .5f;
         float _StarsInNucleusRatio = 0.01f;
         float _armSeparationDistance = 2 * Mathf.PI / inNumberOfArms;
         float galaxyRadius = GalaxyHelpers.GetMax(inGalaxyRadius);
@@ -75,7 +75,7 @@ public class Spiral : GalaxyType
             Color starColor = Color.white;
             if (StarColor != null)
             {
-                float fIndex = (((distanceFromCentre / _GalaxyScale)) * (float)StarColor.width);
+                float fIndex = (((distance * distance )) * (float)StarColor.width);
                 int colorIndex = (int)Mathf.Clamp(fIndex, 0, (float)StarColor.width);
 
                 starColor = StarColor.GetPixel(colorIndex, 0);

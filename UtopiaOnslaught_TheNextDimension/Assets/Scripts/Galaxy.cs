@@ -49,7 +49,7 @@ public class Galaxy
             case GALXAYTYPES.Sombrero:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, ((inGalaxyRadius * inFlatness) / 100.0f), inGalaxyRadius);
-                    mGalaxyType = new Spherical(mStars, mRandom, inNumberOfStars, dimensions, inStarColour);
+                    mGalaxyType = new Sombrero(mStars, mRandom, inNumberOfStars, dimensions, inStarColour);
                 }
                 break;
             default:

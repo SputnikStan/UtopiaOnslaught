@@ -33,7 +33,7 @@ public class DisplayGalaxy : MonoBehaviour
 
         mGalaxy.Generate(Seed, GalaxyType, NumberOfStars, Radius, Flatness, mStarColorGradient, NumberOfArms);
 
-       // GalaxyBounds = new Quadrant(mGalaxy, transform, transform.position, Radius, LineMaterial, 0);
+        GalaxyBounds = new Quadrant(mGalaxy, transform, transform.position, Radius, LineMaterial, 0);
 
         RenderGalaxy();
     }

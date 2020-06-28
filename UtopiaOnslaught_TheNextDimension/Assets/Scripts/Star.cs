@@ -9,7 +9,6 @@ public class Star
     private const char STRING_TERMINATOR = '\0';
 
     private Vector3 mPosition;
-    private char[] mName;
     private Color mColour;
     private SolarObjects mSolarObjects;
 
@@ -24,14 +23,14 @@ public class Star
         get { return new Vector3(mPosition.x, mPosition.z, mPosition.y); }
     }
 
+    public float mTemperature { get; internal set; }
+
+    public string mName = string.Empty;
+
     public string Name
     {
-        get { return mName.ToString(); }
-        set
-        {
-            for (int i = 0; i < MAX_NAMELENGTH; i++) mName[i] = value[i];
-            mName[MAX_NAMELENGTH] = STRING_TERMINATOR;
-        }
+        get { return mName; }
+        private set { mName = value;}
     }
 
     public Color Colour
@@ -46,16 +45,49 @@ public class Star
         set { mSolarObjects = value; }
     }
 
-    public Star(string _Name, Vector3 _Position, Color _Color)
+    public Star(string _Name, Vector3 _Position, Color _Color, float temp = 0)
     {
-        mName = new char[MAX_NAMELENGTH + 1];
-        for (int i = 0; i < MAX_NAMELENGTH; i++) mName[i] = _Name[i];
-        mName[MAX_NAMELENGTH] = STRING_TERMINATOR;
-
+        Name = _Name;
         mPosition = new Vector3(_Position.x, _Position.y, _Position.z);
         mColour = _Color;
+        mTemperature = temp;
 
         mSolarObjects = Generate_SolarSystem();
+    }
+
+    public void Offset(Vector3 offset)
+    {
+        Position += offset;
+    }
+
+    public void Scale( Vector3 scale)
+    {
+        Position.Scale(scale);
+    }
+
+    public void Swirl(Vector3 axis, float amount)
+    {
+        var d = Position.magnitude;
+
+        var a = (float)Mathf.Pow(d, 0.1f) * amount;
+
+        Position = Quaternion.AngleAxis(a, axis) * Position;
+    }
+
+    public void SetColor(Texture2D inStarColour, float inSize)
+    {
+        Color starColor = Color.white;
+        if (inStarColour != null)
+        {
+
+            float distanceFromCentre = Position.magnitude;
+            float fIndex = ((distanceFromCentre / inSize) * (float)inStarColour.width);
+            int colorIndex = (int)Mathf.Clamp(fIndex, 0, (float)inStarColour.width);
+
+            starColor = inStarColour.GetPixel(colorIndex, 0);
+        }
+
+        mColour = starColor;
     }
 
     SolarObjects Generate_SolarSystem()

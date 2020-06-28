@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GalaxyRandom
 {
-    private static System.Random sm_Rand;
+    public System.Random sm_Rand;
 
     public GalaxyRandom(int _Seed)
     {

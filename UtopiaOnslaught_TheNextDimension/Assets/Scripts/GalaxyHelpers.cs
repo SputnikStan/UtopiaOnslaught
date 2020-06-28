@@ -4,6 +4,10 @@ using UnityEngine;
 
 public static class GalaxyHelpers
 {
+    public enum BOXCORNERS : int { corner1 = 0, corner2, corner3, corner4, corner5, corner6, corner7, corner8 };
+    public enum GALAXYDEFINES : int { SECTOREDEPTH = 3 };
+    public enum GALXAYTYPES : int { Spherical = 0, Spiral, Sombrero, Eliptical };
+
     public static Vector3[] CalculateBounds(Vector3 position, Vector3 dimensions)
     {
         Vector3[] Bounds = new Vector3[8];

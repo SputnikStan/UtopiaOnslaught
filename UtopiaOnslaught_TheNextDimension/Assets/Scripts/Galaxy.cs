@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Galaxy
+public class Galaxy : MonoBehaviour
 {
     const int numArms = 2;
    // const float armSeparationDistance = 2 * Mathf.PI / numArms;
@@ -10,62 +10,96 @@ public class Galaxy
     const float rotationFactor = 5;
     const float randomOffsetXY = 0.02f;
 
-    private GalaxyType mGalaxyType;
+    public Texture2D mStarColorGradient;
+    public ParticleSystem mGalaxyParticles;
+    public int Seed = 6666;
+    public int NumberOfStars = 1000;
+    public int NumberOfArms = 2;
+    public float Dimensions = 1024;
+    public float Flatness = 10.0f;  // Percentage of Y
+    public Material LineMaterial;
+    public GalaxyHelpers.GALXAYTYPES GalaxyType = GalaxyHelpers.GALXAYTYPES.Spherical;
+    private Vector3 Offsets = Vector3.zero;
+    private Vector3 Radius = Vector3.zero;
+    private Vector3 GalaxySize = Vector3.zero;
+    private Quadrant GalaxyBounds;
 
-    private List<Star> mStars;
-    public List<Star> Stars
-    {
-        get { return mStars; }
-    }
+    private GalaxyBase mGalaxy;
+
     public Texture2D StarColor { get; set; }
 
     private GalaxyRandom mRandom;
-    public Galaxy()
+
+    void Start()
     {
-        mStars = new List<Star>();
+        float RoundedDimension = Mathf.Pow(2, Mathf.Ceil(Mathf.Log(Dimensions) / Mathf.Log(2)));
+        float Radius = RoundedDimension / 2;
+        mRandom = new GalaxyRandom(Seed);
+
+        Generate(GalaxyType, NumberOfStars, Radius, Flatness, mStarColorGradient, NumberOfArms);
+
+        GalaxyBounds = new Quadrant(mGalaxy.Stars, transform, transform.position, Radius, LineMaterial, 0);
+
+        RenderGalaxy();
     }
 
-    public void Generate(int inSeed, GALXAYTYPES inGalaxyType, int inNumberOfStars, float inGalaxyRadius, float inFlatness, Texture2D inStarColour, int inNumberOfArms = 0)
+    // Update is called once per frame
+    void Update()
+    {
+        //DrawGalaxyBounds();
+    }
+
+    public void Generate(GalaxyHelpers.GALXAYTYPES inGalaxyType, int inNumberOfStars, float inGalaxyRadius, float inFlatness, Texture2D inStarColour, int inNumberOfArms = 0)
     {
         StarColor = inStarColour;
-        mRandom = new GalaxyRandom(inSeed);
 
-        mStars = new List<Star>();
 
         switch(inGalaxyType)
         {
-            case GALXAYTYPES.Eliptical:
+            case GalaxyHelpers.GALXAYTYPES.Eliptical:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, ((inGalaxyRadius * inFlatness) / 100.0f), inGalaxyRadius);
-                    mGalaxyType = new Spherical(mStars, mRandom, inNumberOfStars, dimensions, inStarColour);
+                    mGalaxy = new Cluster(mRandom, inNumberOfStars, dimensions, inStarColour);
                 }
                 break;
-            case GALXAYTYPES.Spiral:
+            case GalaxyHelpers.GALXAYTYPES.Spiral:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, ((inGalaxyRadius * inFlatness) / 100.0f), inGalaxyRadius);
-                    mGalaxyType = new Spiral(mStars, mRandom, inNumberOfStars, dimensions, inStarColour, inNumberOfArms);
+                    mGalaxy = new Spiral(mRandom, inNumberOfStars, dimensions, inStarColour);
                 }
                 break;
-            case GALXAYTYPES.Sombrero:
+            case GalaxyHelpers.GALXAYTYPES.Sombrero:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, ((inGalaxyRadius * inFlatness) / 100.0f), inGalaxyRadius);
-                    mGalaxyType = new Sombrero(mStars, mRandom, inNumberOfStars, dimensions, inStarColour);
+                    mGalaxy = new Sombrero(mRandom, inNumberOfStars, dimensions, inStarColour);
                 }
                 break;
             default:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, inGalaxyRadius, inGalaxyRadius);
 
-                    mGalaxyType = new Spherical(mStars, mRandom, inNumberOfStars, dimensions, inStarColour);
+                    mGalaxy = new Cluster(mRandom, inNumberOfStars, dimensions, inStarColour);
                 }
                 break;
         }
     }
 
-    private double Pow3Constrained(double _X)
+    private void RenderGalaxy()
     {
-        double value = System.Math.Pow(_X - 0.5, 3) * 4 + 0.5d;
-        return System.Math.Max(System.Math.Min(1, value), 0);
+        if (mGalaxyParticles != null)
+        {
+            List<ParticleSystem.Particle> particles = new List<ParticleSystem.Particle>();
+            foreach (Star star in mGalaxy.Stars)
+            {
+                ParticleSystem.Particle particle = new ParticleSystem.Particle { position = star.ParticlePosition, rotation = 0, angularVelocity = 0, startColor = star.Colour, startSize = 1.0f, velocity = Vector3.zero };
+                particles.Add(particle);
+            }
+
+            //m_NumberOfStars = m_Galaxy.StarCount;
+            mGalaxyParticles.SetParticles(particles.ToArray(), particles.Count);
+        }
+
+
     }
 
 }

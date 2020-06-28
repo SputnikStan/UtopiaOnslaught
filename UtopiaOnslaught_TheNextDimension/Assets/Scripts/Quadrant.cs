@@ -13,7 +13,7 @@ public class Quadrant
 
     private List<Sector> Sectors;
 
-    public Quadrant(Galaxy inGalaxy, Transform parent, Vector3 inPosition, float inSize, Material inLineMaterial, int inLevel)
+    public Quadrant(List<Star> inStars, Transform parent, Vector3 inPosition, float inSize, Material inLineMaterial, int inLevel)
     {
         Color[] quadrantColors = { Color.green, Color.yellow, Color.blue, Color.red, Color.cyan };
 
@@ -29,7 +29,7 @@ public class Quadrant
         {
             LineObjects = GalaxyHelpers.CreateBox(quadrantObject.transform, Bounds, inLineMaterial, quadrantColors[inLevel]);
         }
-
+        /*
 
         float sectorSize = inSize / 2;
 
@@ -43,36 +43,37 @@ public class Quadrant
         Vector3 position7 = new Vector3(Position.x + sectorSize, Position.y - sectorSize, Position.z + sectorSize);
         Vector3 position8 = new Vector3(Position.x - sectorSize, Position.y - sectorSize, Position.z + sectorSize);
 
-        if (inLevel == (int)(GALAXYDEFINES.SECTOREDEPTH - 1))
+        if (inLevel == (int)(GalaxyHelpers.GALAXYDEFINES.SECTOREDEPTH - 1))
         {
             Sectors = new List<Sector>
             {
-                new Sector(inGalaxy, quadrantObject.transform, position1, sectorSize, inLineMaterial),
-                new Sector(inGalaxy, quadrantObject.transform,position2, sectorSize, inLineMaterial),
-                new Sector(inGalaxy, quadrantObject.transform,position3, sectorSize, inLineMaterial),
-                new Sector(inGalaxy, quadrantObject.transform, position4, sectorSize, inLineMaterial),
-                new Sector(inGalaxy, quadrantObject.transform,position5, sectorSize, inLineMaterial),
-                new Sector(inGalaxy, quadrantObject.transform, position6, sectorSize, inLineMaterial),
-                new Sector(inGalaxy, quadrantObject.transform, position7, sectorSize, inLineMaterial),
-                new Sector(inGalaxy, quadrantObject.transform, position8, sectorSize, inLineMaterial)
+                new Sector(inStars, quadrantObject.transform, position1, sectorSize, inLineMaterial),
+                new Sector(inStars, quadrantObject.transform,position2, sectorSize, inLineMaterial),
+                new Sector(inStars, quadrantObject.transform,position3, sectorSize, inLineMaterial),
+                new Sector(inStars, quadrantObject.transform, position4, sectorSize, inLineMaterial),
+                new Sector(inStars, quadrantObject.transform,position5, sectorSize, inLineMaterial),
+                new Sector(inStars, quadrantObject.transform, position6, sectorSize, inLineMaterial),
+                new Sector(inStars, quadrantObject.transform, position7, sectorSize, inLineMaterial),
+                new Sector(inStars, quadrantObject.transform, position8, sectorSize, inLineMaterial)
             };
         }
 
         int Level = inLevel + 1;
 
-        if(Level <= (int)GALAXYDEFINES.SECTOREDEPTH)
+        if(Level <= (int)GalaxyHelpers.GALAXYDEFINES.SECTOREDEPTH)
         {
             Children = new List<Quadrant>
             {
-                new Quadrant(inGalaxy, quadrantObject.transform, position1, sectorSize, inLineMaterial, Level),
-                new Quadrant(inGalaxy, quadrantObject.transform, position2, sectorSize, inLineMaterial, Level),
-                new Quadrant(inGalaxy, quadrantObject.transform, position3, sectorSize, inLineMaterial, Level),
-                new Quadrant(inGalaxy, quadrantObject.transform, position4, sectorSize, inLineMaterial, Level),
-                new Quadrant(inGalaxy, quadrantObject.transform, position5, sectorSize, inLineMaterial, Level),
-                new Quadrant(inGalaxy, quadrantObject.transform, position6, sectorSize, inLineMaterial, Level),
-                new Quadrant(inGalaxy, quadrantObject.transform, position7, sectorSize, inLineMaterial, Level),
-                new Quadrant(inGalaxy, quadrantObject.transform, position8, sectorSize, inLineMaterial, Level)
+                new Quadrant(inStars, quadrantObject.transform, position1, sectorSize, inLineMaterial, Level),
+                new Quadrant(inStars, quadrantObject.transform, position2, sectorSize, inLineMaterial, Level),
+                new Quadrant(inStars, quadrantObject.transform, position3, sectorSize, inLineMaterial, Level),
+                new Quadrant(inStars, quadrantObject.transform, position4, sectorSize, inLineMaterial, Level),
+                new Quadrant(inStars, quadrantObject.transform, position5, sectorSize, inLineMaterial, Level),
+                new Quadrant(inStars, quadrantObject.transform, position6, sectorSize, inLineMaterial, Level),
+                new Quadrant(inStars, quadrantObject.transform, position7, sectorSize, inLineMaterial, Level),
+                new Quadrant(inStars, quadrantObject.transform, position8, sectorSize, inLineMaterial, Level)
             };
         }
+        */
     }
 }

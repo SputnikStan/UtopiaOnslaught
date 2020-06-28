@@ -8,20 +8,16 @@ public class Sector
 
     private Vector3[] BoundingPoints = new Vector3[8];
     private List<GameObject> LineObjects;
-    private Bounds boundingBox;
-    private List<Star> mStars;
 
-    public Sector(Galaxy inGalaxy, Transform parent, Vector3 inPosition, float inDimension, Material inLineMaterial)
+    public Sector(List<Star> inStars, Transform parent, Vector3 inPosition, float inDimension, Material inLineMaterial)
     {
         Vector3 DimensionV = new Vector3(inDimension, inDimension, inDimension);
         GameObject sectorObject = new GameObject($"Sector X{inPosition.x}-Y{inPosition.y}-z{inPosition.z}");
         sectorObject.transform.parent = parent;
 
-        mStars = new List<Star>();
-
         LineObjects = new List<GameObject>();
 
-        boundingBox = new Bounds
+        Bounds boundingBox = new Bounds
         {
             center = inPosition,
             extents = (DimensionV / 2),
@@ -30,26 +26,25 @@ public class Sector
             size = DimensionV
         };
 
-        mStars = GetStars(inGalaxy);
-
-        if(mStars.Count > 0)
+        if(GetStars(inStars, boundingBox) > 0)
         {
             BoundingPoints = GalaxyHelpers.CalculateBounds(inPosition, DimensionV);
             LineObjects = GalaxyHelpers.CreateBox(sectorObject.transform, BoundingPoints, inLineMaterial, Color.grey);
         }
     }
 
-    private List<Star> GetStars(Galaxy inGalaxy)
+    private int GetStars(List<Star> inStars, Bounds inBoundingBox)
     {
         List<Star> starlist = new List<Star>();
 
-        foreach (Star star in inGalaxy.Stars)
+        foreach (Star star in inStars)
         {
-            if(boundingBox.Contains(star.Position) == true)
+            if(inBoundingBox.Contains(star.Position) == true)
             {
                 starlist.Add(star);
             }
         }
-        return starlist;
+
+        return starlist.Count;
     }
 }

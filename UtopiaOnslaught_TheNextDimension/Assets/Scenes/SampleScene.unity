@@ -147,18 +147,18 @@ MonoBehaviour:
   m_GameObject: {fileID: 572866998}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f1f0244fb4f3d641b7ab085a90b9800, type: 3}
+  m_Script: {fileID: 11500000, guid: 3b045a7d4ab8f0e489902095e124f914, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   mStarColorGradient: {fileID: 2800000, guid: 9cc12debdd72cbe4aaaf035f545770a5, type: 3}
   mGalaxyParticles: {fileID: 2069276923}
   Seed: 6666
-  NumberOfStars: 100000
+  NumberOfStars: 10000
   NumberOfArms: 2
-  Dimensions: 1000
+  Dimensions: 100
   Flatness: 25
   LineMaterial: {fileID: 2100000, guid: 1db76eeb84439db4ca5976617e52ee10, type: 2}
-  GalaxyType: 1
+  GalaxyType: 3
 --- !u!4 &572867000
 Transform:
   m_ObjectHideFlags: 0

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Sombrero : GalaxyBase
+public class Disc : GalaxyBase
 {
     private readonly float _size;
 
@@ -13,7 +13,7 @@ public class Sombrero : GalaxyBase
     private readonly float _deviationY;
     private readonly float _deviationZ;
 
-    public Sombrero(GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, Texture2D inStarColour) : base(inRandom, inStarColour)
+    public Disc(GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, Texture2D inStarColour) : base(inRandom, inStarColour)
     {
 
         _size = GalaxyHelpers.GetMax(inGalaxyRadius);
@@ -30,7 +30,8 @@ public class Sombrero : GalaxyBase
             float deviationX = 0.0000025f, float deviationY = 0.0000025f, float deviationZ = 0.0000025f
         )
     {
-        var count = Mathf.Max(0, GalaxySystemRand.NormallyDistributedSingle(countDeviation, countMean));
+        var count = 1;  // Mathf.Max(0, GalaxySystemRand.NormallyDistributedSingle(countDeviation, countMean));
+        int starsPerCluster = inNumberOfStars / count;
 
         for (int i = 0; i < count; i++)
         {
@@ -41,7 +42,7 @@ public class Sombrero : GalaxyBase
             );
 
 
-            foreach (var star in GenerateNucleus(inNumberOfStars, _size, _densityMean, _densityDeviation, _deviationX, _deviationY, _deviationZ))
+            foreach (var star in GenerateNucleus(starsPerCluster, _size, _densityMean, _densityDeviation, _deviationX, _deviationY, _deviationZ))
             {
                 star.Offset(center);
             }

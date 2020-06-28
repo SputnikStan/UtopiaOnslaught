@@ -24,10 +24,10 @@ public class Spiral : GalaxyBase
         _deviationY = 0.25f;
         _deviationZ = 0.25f;
 
-        Generate(inNumberOfStars);
+        Generate(inNumberOfStars, inGalaxyRadius);
     }
 
-    override public void Generate(int inNumberOfStars, float countMean = 0.0000025f, float countDeviation = 0.000001f,
+    override public void Generate(int inNumberOfStars, Vector3 inGalaxyRadius, float countMean = 0.0000025f, float countDeviation = 0.000001f,
             float deviationX = 0.0000025f, float deviationY = 0.0000025f, float deviationZ = 0.0000025f
         )
     {

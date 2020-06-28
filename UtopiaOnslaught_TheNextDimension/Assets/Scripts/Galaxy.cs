@@ -18,7 +18,7 @@ public class Galaxy : MonoBehaviour
     public float Dimensions = 1024;
     public float Flatness = 10.0f;  // Percentage of Y
     public Material LineMaterial;
-    public GalaxyHelpers.GALXAYTYPES GalaxyType = GalaxyHelpers.GALXAYTYPES.Spherical;
+    public GalaxyHelpers.GALXAYTYPES GalaxyType = GalaxyHelpers.GALXAYTYPES.Cluster;
     private Vector3 Offsets = Vector3.zero;
     private Vector3 Radius = Vector3.zero;
     private Vector3 GalaxySize = Vector3.zero;
@@ -56,7 +56,7 @@ public class Galaxy : MonoBehaviour
 
         switch(inGalaxyType)
         {
-            case GalaxyHelpers.GALXAYTYPES.Eliptical:
+            case GalaxyHelpers.GALXAYTYPES.Disc:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, ((inGalaxyRadius * inFlatness) / 100.0f), inGalaxyRadius);
                     mGalaxy = new Cluster(mRandom, inNumberOfStars, dimensions, inStarColour);

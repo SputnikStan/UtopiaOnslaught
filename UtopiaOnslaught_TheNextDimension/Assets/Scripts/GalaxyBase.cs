@@ -16,7 +16,7 @@ abstract public class GalaxyBase
         StarColour = inStarColour;
     }
 
-    public abstract void Generate(int inStarCount = 1, float countMean = 0.0000025f, float countDeviation = 0.000001f,
+    public abstract void Generate(int inStarCount, Vector3 inGalaxyRadius, float countMean = 0.0000025f, float countDeviation = 0.000001f,
             float deviationX = 0.0000025f, float deviationY = 0.0000025f, float deviationZ = 0.0000025f);
 
     public List<Star> GenerateNucleus(int inStarCount, float size, float densityMean = 0.25f, float densityDeviation = 0.1f, float deviationX = 0.25f, float deviationY = 0.25f, float deviationZ = 0.25f)
@@ -24,23 +24,24 @@ abstract public class GalaxyBase
         List<Star> result = new List<Star>();
 
         var density = Mathf.Max(0, GalaxySystemRand.NormallyDistributedSingle(densityDeviation, densityMean));
-        var countMax = Mathf.Max(0, (int)(size * size * size * density));
+        var countMax = Mathf.Max(0, (int)(inStarCount * density));
 
         for (int i = 0; i < countMax; i++)
         {
+            Vector3 starPos = GalaxyRand.InsideUnitSphere(true);
+            starPos.x = ((starPos.x * deviationX));
+            starPos.y = ((starPos.y * deviationY));
+            starPos.z = ((starPos.z * deviationZ));
 
-            Vector3 starPos = new Vector3(
-                GalaxySystemRand.NormallyDistributedSingle(deviationX * size, 0),
-                GalaxySystemRand.NormallyDistributedSingle(deviationY * size, 0),
-                GalaxySystemRand.NormallyDistributedSingle(deviationZ * size, 0)
-            );
             var d = starPos.magnitude / size;
             var m = d * 2000 + (1 - d) * 15000;
             var t = GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
 
             Color starColor = Color.magenta;
 
-            result.Add(new Star(GenerateStarName.Generate(GalaxySystemRand), starPos, starColor, t));
+
+            Star star = new Star(GenerateStarName.Generate(GalaxySystemRand), starPos, starColor, t);
+            result.Add(star);
         }
 
         return result;

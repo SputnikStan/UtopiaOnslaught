@@ -48,7 +48,7 @@ public class Cluster : GalaxyBase
     public Cluster( GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, Texture2D inStarColour): base(inRandom, inStarColour)
     {
 
-        Size = (int) GalaxyHelpers.GetMax(inGalaxyRadius); 
+        Size = (int)GalaxyHelpers.GetMax(inGalaxyRadius); 
         Spacing = 5;
 
         MinimumArms = 3;
@@ -64,21 +64,21 @@ public class Cluster : GalaxyBase
         Swirl = (float)Mathf.PI * 4;
 
         CenterClusterScale = 0.19f;
-        CenterClusterDensityMean = 0.005f;
+        CenterClusterDensityMean = 0.1f;
         CenterClusterDensityDeviation = 0.015f;
         CenterClusterSizeDeviation = 0.00125f;
 
         CenterClusterCountMean = 25f;
         CenterClusterCountDeviation = 7f;
-        CenterClusterPositionDeviation = 0.125f;
+        CenterClusterPositionDeviation = 0.75f;
 
         CentralVoidSizeMean = 25;
         CentralVoidSizeDeviation = 7;
 
-        Generate(inNumberOfStars, CenterClusterCountMean, CenterClusterCountDeviation, Size * CenterClusterPositionDeviation, Size * CenterClusterPositionDeviation, Size * CenterClusterPositionDeviation);
+        Generate(inNumberOfStars, inGalaxyRadius, CenterClusterCountMean, CenterClusterCountDeviation, inGalaxyRadius.x * CenterClusterPositionDeviation, inGalaxyRadius.y * CenterClusterPositionDeviation, inGalaxyRadius.z * CenterClusterPositionDeviation);
     }
 
-    override public void Generate(int inStarCount, float countMean = 10f, float countDeviation = 1f,
+    override public void Generate(int inStarCount, Vector3 inGalaxyRadius, float countMean = 10f, float countDeviation = 1f,
             float deviationX = 0.025f, float deviationY = 0.025f, float deviationZ = 0.025f
         )
     {
@@ -87,22 +87,37 @@ public class Cluster : GalaxyBase
             centralVoidSize = 0;
         var centralVoidSizeSqr = centralVoidSize * centralVoidSize;
 
-        var count = Mathf.Max(0, GalaxySystemRand.NormallyDistributedSingle(countDeviation, countMean));
-        int starsPerCluster = (int)((float)inStarCount / count);
 
-        for (int i = 0; i < count; i++)
+        int totalStars = inStarCount;
+
+        while (totalStars > 0)
         {
-            Vector3 center = new Vector3(
-                GalaxySystemRand.NormallyDistributedSingle(deviationX, 0),
-                GalaxySystemRand.NormallyDistributedSingle(deviationY, 0),
-                GalaxySystemRand.NormallyDistributedSingle(deviationZ, 0 )
-            );
+            var count = Mathf.Max(0, GalaxySystemRand.NormallyDistributedSingle(countDeviation, countMean));
+            int starsPerCluster = (int)((float)inStarCount / count);
 
-            foreach (var star in GenerateNucleus(starsPerCluster, Size, CenterClusterDensityMean, CenterClusterDensityDeviation, CenterClusterPositionDeviation, CenterClusterPositionDeviation, CenterClusterPositionDeviation))
+            Vector3 center = GalaxyRand.InsideUnitSphere(true);
+            float galaxyRadius = GalaxyHelpers.GetMax(inGalaxyRadius);
+            float clusterRadius = GalaxyRand.Range(0, galaxyRadius);
+            float radius = (galaxyRadius - clusterRadius) * CenterClusterPositionDeviation;
+            center.x = ((center.x * radius));
+            center.y = ((center.y * radius) );
+            center.z = ((center.z * radius) );
+
+            float clusterScale = Mathf.Max(0, GalaxySystemRand.NormallyDistributedSingle(CenterClusterPositionDeviation, 2.0f));
+
+            //Vector3 center = new Vector3(
+            //    GalaxySystemRand.NormallyDistributedSingle(deviationX, 0),
+            //    GalaxySystemRand.NormallyDistributedSingle(deviationY, 0),
+            //    GalaxySystemRand.NormallyDistributedSingle(deviationZ, 0 )
+            //);
+
+            foreach (var star in GenerateNucleus(inStarCount, radius, CenterClusterDensityMean, CenterClusterDensityDeviation, radius, radius, radius))
             {
+                //star.SetColor(StarColour, Size);
                 star.Offset(center);
                 star.SetColor(StarColour, Size);
                 Stars.Add(star);
+                totalStars--;
             }
         }
     }

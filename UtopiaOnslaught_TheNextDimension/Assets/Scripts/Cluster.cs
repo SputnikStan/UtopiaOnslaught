@@ -97,25 +97,17 @@ public class Cluster : GalaxyBase
 
             Vector3 center = GalaxyRand.InsideUnitSphere(true);
             float galaxyRadius = GalaxyHelpers.GetMax(inGalaxyRadius);
-            float clusterRadius = GalaxyRand.Range(0, galaxyRadius);
-            float radius = (galaxyRadius - clusterRadius) * CenterClusterPositionDeviation;
-            center.x = ((center.x * radius));
-            center.y = ((center.y * radius) );
-            center.z = ((center.z * radius) );
-
-            float clusterScale = Mathf.Max(0, GalaxySystemRand.NormallyDistributedSingle(CenterClusterPositionDeviation, 2.0f));
-
-            //Vector3 center = new Vector3(
-            //    GalaxySystemRand.NormallyDistributedSingle(deviationX, 0),
-            //    GalaxySystemRand.NormallyDistributedSingle(deviationY, 0),
-            //    GalaxySystemRand.NormallyDistributedSingle(deviationZ, 0 )
-            //);
+            float clusterRadius = GalaxyRand.Range(galaxyRadius / 2, galaxyRadius) * CenterClusterPositionDeviation;
+            float radius = (galaxyRadius - clusterRadius);
+            center.x *= radius;
+            center.y *= radius;
+            center.z *= radius;
 
             foreach (var star in GenerateNucleus(inStarCount, radius, CenterClusterDensityMean, CenterClusterDensityDeviation, radius, radius, radius))
             {
-                //star.SetColor(StarColour, Size);
-                star.Offset(center);
                 star.SetColor(StarColour, Size);
+                star.Offset(center);
+                //star.SetColor(StarColour, Size);
                 Stars.Add(star);
                 totalStars--;
             }

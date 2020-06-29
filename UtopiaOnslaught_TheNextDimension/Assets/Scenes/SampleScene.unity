@@ -158,7 +158,7 @@ MonoBehaviour:
   Dimensions: 100
   Flatness: 25
   LineMaterial: {fileID: 2100000, guid: 1db76eeb84439db4ca5976617e52ee10, type: 2}
-  GalaxyType: 0
+  GalaxyType: 3
 --- !u!4 &572867000
 Transform:
   m_ObjectHideFlags: 0

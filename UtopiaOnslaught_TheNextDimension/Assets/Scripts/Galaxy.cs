@@ -15,6 +15,11 @@ public class Galaxy : MonoBehaviour
     public int Seed = 6666;
     public int NumberOfStars = 1000;
     public int NumberOfArms = 2;
+    public int MaxClusters = 10;
+    public int MinClusters = 5;
+    public float NucleusRadiusDeviation = 0.25f;
+    public float StarsInNucleus = 0.5f;
+    public float InnerNucleusDeviation = 0.9f;
     public float Dimensions = 1024;
     public float Flatness = 10.0f;  // Percentage of Y
     public Material LineMaterial;
@@ -56,10 +61,17 @@ public class Galaxy : MonoBehaviour
 
         switch(inGalaxyType)
         {
+            case GalaxyHelpers.GALXAYTYPES.Sphere:
+                {
+                    Vector3 dimensions = new Vector3(inGalaxyRadius, inGalaxyRadius, inGalaxyRadius);
+
+                    mGalaxy = new Cluster(mRandom, inNumberOfStars, dimensions, inStarColour, 1, 1);
+                }
+                break;
             case GalaxyHelpers.GALXAYTYPES.Disc:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, ((inGalaxyRadius * inFlatness) / 100.0f), inGalaxyRadius);
-                    mGalaxy = new Cluster(mRandom, inNumberOfStars, dimensions, inStarColour);
+                    mGalaxy = new Disc(mRandom, inNumberOfStars, dimensions, inStarColour, NucleusRadiusDeviation, StarsInNucleus, InnerNucleusDeviation);
                 }
                 break;
             case GalaxyHelpers.GALXAYTYPES.Spiral:
@@ -78,7 +90,7 @@ public class Galaxy : MonoBehaviour
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, inGalaxyRadius, inGalaxyRadius);
 
-                    mGalaxy = new Cluster(mRandom, inNumberOfStars, dimensions, inStarColour);
+                    mGalaxy = new Cluster(mRandom, inNumberOfStars, dimensions, inStarColour, MinClusters, MaxClusters);
                 }
                 break;
         }

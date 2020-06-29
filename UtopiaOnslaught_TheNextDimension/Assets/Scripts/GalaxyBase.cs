@@ -23,25 +23,55 @@ abstract public class GalaxyBase
     {
         List<Star> result = new List<Star>();
 
-        var density = Mathf.Max(0, GalaxySystemRand.NormallyDistributedSingle(densityDeviation, densityMean));
-        var countMax = Mathf.Max(0, (int)(inStarCount * density));
-
-        for (int i = 0; i < countMax; i++)
+        for (int i = 0; i < inStarCount; i++)
         {
             Vector3 starPos = GalaxyRand.InsideUnitSphere(true);
-            starPos.x = ((starPos.x * deviationX));
-            starPos.y = ((starPos.y * deviationY));
-            starPos.z = ((starPos.z * deviationZ));
+            starPos.x *= size;
+            starPos.y *= size;
+            starPos.z *= size;
 
             var d = starPos.magnitude / size;
             var m = d * 2000 + (1 - d) * 15000;
             var t = GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
 
             Color starColor = Color.magenta;
-
-
             Star star = new Star(GenerateStarName.Generate(GalaxySystemRand), starPos, starColor, t);
+
             result.Add(star);
+        }
+
+        return result;
+    }
+
+    public List<Star> GenerateDisc(int inStarCount, float nucleusRadius, float InnerNucleusDeviation = 0.25f, float galaxyRadius = 0.1f, float deviationX = 0.25f, float deviationY = 0.25f, float deviationZ = 0.25f)
+    {
+        List<Star> result = new List<Star>();
+
+        int starsInDisc = inStarCount;
+
+        while (starsInDisc >= 0)
+        {
+            Vector3 starPos = GalaxyRand.InsideUnitSphere(true);
+
+            starPos.x *= deviationX;
+            starPos.y *= deviationY;
+            starPos.z *= deviationZ;
+
+            float distance = starPos.magnitude;
+            if (distance > (nucleusRadius * InnerNucleusDeviation))
+            {
+                var d = starPos.magnitude / galaxyRadius;
+                var m = d * 2000 + (1 - d) * 15000;
+                var t = GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
+
+                Color starColor = Color.magenta;
+                Star star = new Star(GenerateStarName.Generate(GalaxySystemRand), starPos, starColor, t);
+
+                star.SetColor(star.ConvertTemperature());
+                result.Add(star);
+
+                starsInDisc--;
+            }
         }
 
         return result;

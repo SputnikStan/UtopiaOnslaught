@@ -2,12 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Litipk.ColorSharp.LightSpectrums;
 
 public class Star
 {
     private const uint MAX_NAMELENGTH = 8;
     private const char STRING_TERMINATOR = '\0';
-
+    private GalaxyRandom mRandom;
     private Vector3 mPosition;
     private Color mColour;
     private SolarObjects mSolarObjects;
@@ -47,6 +48,7 @@ public class Star
 
     public Star(string _Name, Vector3 _Position, Color _Color, float temp = 0)
     {
+        mRandom = new GalaxyRandom((int)(_Position.x * _Position.y * _Position.z));
         Name = _Name;
         mPosition = new Vector3(_Position.x, _Position.y, _Position.z);
         mColour = _Color;
@@ -87,7 +89,30 @@ public class Star
             starColor = inStarColour.GetPixel(colorIndex, 0);
         }
 
-        mColour = starColor;
+        SetColor(starColor);
+    }
+
+    public void SetColor(Color inColor)
+    {
+        mColour = inColor;
+    }
+
+    public Color ConvertTemperature()
+    {
+        return ConvertTemperature(mTemperature);
+    }
+
+    public Color ConvertTemperature(float colorTemperature)
+    {
+        var srgb = new BlackBodySpectrum(colorTemperature).ToSRGB();
+        return new Color((float)srgb.R, (float)srgb.G, (float)srgb.B);
+    }
+
+    public Color GenerateStarColor(Random random)
+    {
+        var temp = mRandom.sm_Rand.NormallyDistributedSingle(7000, 6000, 1000, 40000);
+
+        return ConvertTemperature(temp);
     }
 
     SolarObjects Generate_SolarSystem()

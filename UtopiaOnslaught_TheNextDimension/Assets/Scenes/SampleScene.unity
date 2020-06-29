@@ -155,8 +155,13 @@ MonoBehaviour:
   Seed: 6666
   NumberOfStars: 10000
   NumberOfArms: 2
+  MaxClusters: 10
+  MinClusters: 2
+  NucleusRadiusDeviation: 0.25
+  StarsInNucleus: 0.2
+  InnerNucleusDeviation: 0.9
   Dimensions: 100
-  Flatness: 25
+  Flatness: 10
   LineMaterial: {fileID: 2100000, guid: 1db76eeb84439db4ca5976617e52ee10, type: 2}
   GalaxyType: 3
 --- !u!4 &572867000

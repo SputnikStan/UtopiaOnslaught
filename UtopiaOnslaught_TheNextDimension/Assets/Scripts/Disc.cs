@@ -44,8 +44,9 @@ public class Disc : GalaxyBase
 
     public float CentralVoidSizeMean { get; set; }
     public float CentralVoidSizeDeviation { get; set; }
+    public float InnerNucleusDeviation { get; set; }
 
-    public Disc(GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, Texture2D inStarColour) : base(inRandom, inStarColour)
+    public Disc(GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, Texture2D inStarColour, float inNucleusRadiusDeviation = 0.25f, float inStarsInNucleus = 0.5f, float inInnerNucleusDeviation = 0.9f) : base(inRandom, inStarColour)
     {
 
         Size = (int)inGalaxyRadius.magnitude;
@@ -53,6 +54,8 @@ public class Disc : GalaxyBase
 
         MinimumArms = 3;
         MaximumArms = 7;
+
+        InnerNucleusDeviation = inInnerNucleusDeviation;
 
         ClusterCountDeviation = 0.35f;
         ClusterCenterDeviation = 0.2f;
@@ -75,30 +78,32 @@ public class Disc : GalaxyBase
         CentralVoidSizeMean = 25;
         CentralVoidSizeDeviation = 7;
 
-        Generate(inNumberOfStars, inGalaxyRadius, CenterClusterCountMean, CenterClusterCountDeviation, inGalaxyRadius.x * CenterClusterPositionDeviation, inGalaxyRadius.y * CenterClusterPositionDeviation, inGalaxyRadius.z * CenterClusterPositionDeviation);
+        Generate(inNumberOfStars, inGalaxyRadius, inNucleusRadiusDeviation, inStarsInNucleus, inGalaxyRadius.x, inGalaxyRadius.y, inGalaxyRadius.z);
     }
 
-    override public void Generate(int inStarCount, Vector3 inGalaxyRadius, float countMean = 10f, float countDeviation = 1f,
+    override public void Generate(int inStarCount, Vector3 inGalaxyRadius, float inNucleusRadiusDeviation = 10f, float inStarsInNucleus = 1f,
             float deviationX = 0.025f, float deviationY = 0.025f, float deviationZ = 0.025f
         )
     {
-        var centralVoidSize = GalaxySystemRand.NormallyDistributedSingle(CentralVoidSizeDeviation, CentralVoidSizeMean);
-        if (centralVoidSize < 0)
-            centralVoidSize = 0;
-        var centralVoidSizeSqr = centralVoidSize * centralVoidSize;
+        float galaxyRadius = inGalaxyRadius.magnitude;
+        float nucleusRadius = galaxyRadius * inNucleusRadiusDeviation;
+        int starsinNucleus = (int)(inStarCount * inStarsInNucleus);
+        int starsInDisc = inStarCount - starsinNucleus;
 
+        Vector3 center = Vector3.zero;
 
-        int totalStars = inStarCount;
-
-
-        Vector3 center = new Vector3(0, 0, 0);
-
-        foreach (var star in GenerateNucleus(totalStars, Size, CenterClusterDensityMean, CenterClusterDensityDeviation, CenterClusterPositionDeviation, CenterClusterPositionDeviation, CenterClusterPositionDeviation))
+        foreach (var star in GenerateNucleus(starsinNucleus, nucleusRadius))
         {
             star.Offset(center);
-            star.SetColor(StarColour, Size);
+            star.SetColor(star.ConvertTemperature());
             Stars.Add(star);
-            totalStars--;
+        }
+
+        foreach (var star in GenerateDisc(starsInDisc, nucleusRadius, InnerNucleusDeviation, galaxyRadius, deviationX, deviationY, deviationZ))
+        {
+            star.Offset(center);
+            star.SetColor(star.ConvertTemperature());
+            Stars.Add(star);
         }
     }
 }

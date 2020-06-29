@@ -45,7 +45,7 @@ public class Cluster : GalaxyBase
     public float CentralVoidSizeMean { get; set; }
     public float CentralVoidSizeDeviation { get; set; }
 
-    public Cluster( GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, Texture2D inStarColour): base(inRandom, inStarColour)
+    public Cluster( GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, Texture2D inStarColour, int inClusterMin = 5, int inClusterMax = 10) : base(inRandom, inStarColour)
     {
 
         Size = (int)GalaxyHelpers.GetMax(inGalaxyRadius); 
@@ -75,39 +75,31 @@ public class Cluster : GalaxyBase
         CentralVoidSizeMean = 25;
         CentralVoidSizeDeviation = 7;
 
-        Generate(inNumberOfStars, inGalaxyRadius, CenterClusterCountMean, CenterClusterCountDeviation, inGalaxyRadius.x * CenterClusterPositionDeviation, inGalaxyRadius.y * CenterClusterPositionDeviation, inGalaxyRadius.z * CenterClusterPositionDeviation);
+        Generate(inNumberOfStars, inGalaxyRadius, inClusterMin, inClusterMax, inGalaxyRadius.x * CenterClusterPositionDeviation, inGalaxyRadius.y * CenterClusterPositionDeviation, inGalaxyRadius.z * CenterClusterPositionDeviation);
     }
 
-    override public void Generate(int inStarCount, Vector3 inGalaxyRadius, float countMean = 10f, float countDeviation = 1f,
+    override public void Generate(int inStarCount, Vector3 inGalaxyRadius, float inClusterMin = 10f, float inClusterMax = 1f,
             float deviationX = 0.025f, float deviationY = 0.025f, float deviationZ = 0.025f
         )
     {
-        var centralVoidSize = GalaxySystemRand.NormallyDistributedSingle(CentralVoidSizeDeviation, CentralVoidSizeMean);
-        if (centralVoidSize < 0)
-            centralVoidSize = 0;
-        var centralVoidSizeSqr = centralVoidSize * centralVoidSize;
-
-
         int totalStars = inStarCount;
+
+        int starsInCluster = (int)(inStarCount / GalaxyRand.Range(inClusterMin, inClusterMax));
+        float galaxyRadius = GalaxyHelpers.GetMax(inGalaxyRadius);
 
         while (totalStars > 0)
         {
-            var count = Mathf.Max(0, GalaxySystemRand.NormallyDistributedSingle(countDeviation, countMean));
-            int starsPerCluster = (int)((float)inStarCount / count);
-
             Vector3 center = GalaxyRand.InsideUnitSphere(true);
-            float galaxyRadius = GalaxyHelpers.GetMax(inGalaxyRadius);
             float clusterRadius = GalaxyRand.Range(galaxyRadius / 2, galaxyRadius) * CenterClusterPositionDeviation;
             float radius = (galaxyRadius - clusterRadius);
             center.x *= radius;
             center.y *= radius;
             center.z *= radius;
 
-            foreach (var star in GenerateNucleus(inStarCount, radius, CenterClusterDensityMean, CenterClusterDensityDeviation, radius, radius, radius))
+            foreach (var star in GenerateNucleus(starsInCluster, clusterRadius, CenterClusterDensityMean, CenterClusterDensityDeviation, clusterRadius, clusterRadius, clusterRadius))
             {
-                star.SetColor(StarColour, Size);
                 star.Offset(center);
-                //star.SetColor(StarColour, Size);
+                star.SetColor(star.ConvertTemperature());
                 Stars.Add(star);
                 totalStars--;
             }

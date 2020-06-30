@@ -77,6 +77,47 @@ abstract public class GalaxyBase
         return result;
     }
 
+    public List<Star> GenerateBand(int inStarCount, float nucleusRadius, float InnerNucleusDeviation = 0.25f, float galaxyRadius = 0.1f, float deviationX = 0.25f, float deviationY = 0.25f, float deviationZ = 0.25f)
+    {
+        List<Star> result = new List<Star>();
+
+        int starsInDisc = inStarCount;
+        float minRadius = (nucleusRadius * InnerNucleusDeviation);
+
+        while (starsInDisc >= 0)
+        {
+            Vector3 starPosUnit = GalaxyRand.InsideUnitSphere(true);
+
+            float distanceX = GalaxyRand.Range((nucleusRadius* InnerNucleusDeviation), (galaxyRadius * (deviationX / galaxyRadius)));
+            float distanceZ = GalaxyRand.Range((nucleusRadius * InnerNucleusDeviation), (galaxyRadius * (deviationZ / galaxyRadius)));
+
+            float angle = GalaxyRand.Next() * Mathf.PI * 2.0f;
+            float x = Mathf.Cos(angle) * distanceX;
+            float y = starPosUnit.y * deviationY;
+            float z = Mathf.Sin(angle) * distanceX;
+
+            Vector3 starPos = new Vector3(x, y, z);
+
+            float distance = starPos.magnitude;
+            //if (distance > (nucleusRadius * InnerNucleusDeviation))
+            {
+                var d = starPos.magnitude / galaxyRadius;
+                var m = d * 2000 + (1 - d) * 15000;
+                var t = GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
+
+                Color starColor = Color.magenta;
+                Star star = new Star(GenerateStarName.Generate(GalaxySystemRand), starPos, starColor, t);
+
+                star.SetColor(star.ConvertTemperature());
+                result.Add(star);
+
+                starsInDisc--;
+            }
+        }
+
+        return result;
+    }
+
     private double Pow3Constrained(double _X)
     {
         double value = System.Math.Pow(_X - 0.5, 3) * 4 + 0.5d;

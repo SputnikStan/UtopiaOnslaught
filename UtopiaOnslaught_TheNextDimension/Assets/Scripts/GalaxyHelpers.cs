@@ -6,7 +6,7 @@ public static class GalaxyHelpers
 {
     public enum BOXCORNERS : int { corner1 = 0, corner2, corner3, corner4, corner5, corner6, corner7, corner8 };
     public enum GALAXYDEFINES : int { SECTOREDEPTH = 3 };
-    public enum GALXAYTYPES : int { Cluster = 0, Spiral, Sombrero, Disc, Sphere };
+
 
     public static Vector3[] CalculateBounds(Vector3 position, Vector3 dimensions)
     {

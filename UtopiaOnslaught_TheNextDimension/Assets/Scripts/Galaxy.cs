@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Galaxy : MonoBehaviour
 {
+    public enum GALXAYTYPES : int { Cluster = 0, Spiral, Sombrero, Disc, Sphere };
+
     const int numArms = 2;
    // const float armSeparationDistance = 2 * Mathf.PI / numArms;
     const float armOffsetMax = 0.5f;
@@ -23,7 +25,7 @@ public class Galaxy : MonoBehaviour
     public float Dimensions = 1024;
     public float Flatness = 10.0f;  // Percentage of Y
     public Material LineMaterial;
-    public GalaxyHelpers.GALXAYTYPES GalaxyType = GalaxyHelpers.GALXAYTYPES.Cluster;
+    public GALXAYTYPES GalaxyType = GALXAYTYPES.Cluster;
     private Vector3 Offsets = Vector3.zero;
     private Vector3 Radius = Vector3.zero;
     private Vector3 GalaxySize = Vector3.zero;
@@ -54,33 +56,33 @@ public class Galaxy : MonoBehaviour
         //DrawGalaxyBounds();
     }
 
-    public void Generate(GalaxyHelpers.GALXAYTYPES inGalaxyType, int inNumberOfStars, float inGalaxyRadius, float inFlatness, Texture2D inStarColour, int inNumberOfArms = 0)
+    public void Generate(GALXAYTYPES inGalaxyType, int inNumberOfStars, float inGalaxyRadius, float inFlatness, Texture2D inStarColour, int inNumberOfArms = 0)
     {
         StarColor = inStarColour;
 
 
         switch(inGalaxyType)
         {
-            case GalaxyHelpers.GALXAYTYPES.Sphere:
+            case GALXAYTYPES.Sphere:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, inGalaxyRadius, inGalaxyRadius);
 
                     mGalaxy = new Cluster(mRandom, inNumberOfStars, dimensions, inStarColour, 1, 1);
                 }
                 break;
-            case GalaxyHelpers.GALXAYTYPES.Disc:
+            case GALXAYTYPES.Disc:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, ((inGalaxyRadius * inFlatness) / 100.0f), inGalaxyRadius);
                     mGalaxy = new Disc(mRandom, inNumberOfStars, dimensions, inStarColour, NucleusRadiusDeviation, StarsInNucleus, InnerNucleusDeviation);
                 }
                 break;
-            case GalaxyHelpers.GALXAYTYPES.Spiral:
+            case GALXAYTYPES.Spiral:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, ((inGalaxyRadius * inFlatness) / 100.0f), inGalaxyRadius);
                     mGalaxy = new Spiral(mRandom, inNumberOfStars, dimensions, inStarColour);
                 }
                 break;
-            case GalaxyHelpers.GALXAYTYPES.Sombrero:
+            case GALXAYTYPES.Sombrero:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, ((inGalaxyRadius * inFlatness) / 100.0f), inGalaxyRadius);
                     mGalaxy = new Sombrero(mRandom, inNumberOfStars, dimensions, inStarColour);

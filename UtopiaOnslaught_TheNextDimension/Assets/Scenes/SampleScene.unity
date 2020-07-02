@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: a4f78a684965a2d4bbc20a4b86231606, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -159,11 +159,11 @@ MonoBehaviour:
   MinClusters: 2
   NucleusRadiusDeviation: 0.25
   StarsInNucleus: 0.2
-  InnerNucleusDeviation: 0.9
+  InnerNucleusDeviation: 0.6
   Dimensions: 100
   Flatness: 10
   LineMaterial: {fileID: 2100000, guid: 1db76eeb84439db4ca5976617e52ee10, type: 2}
-  GalaxyType: 2
+  GalaxyType: 1
 --- !u!4 &572867000
 Transform:
   m_ObjectHideFlags: 0

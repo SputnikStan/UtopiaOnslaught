@@ -5,48 +5,177 @@ using UnityEngine;
 
 public class Spiral : GalaxyBase
 {
-    private readonly float _size;
+    /// <summary>
+    /// Approximate physical size of the galaxy
+    /// </summary>
+    public int Size { get; set; }
 
-    private readonly float _densityMean;
-    private readonly float _densityDeviation;
+    /// <summary>
+    /// Approximate spacing between clusters
+    /// </summary>
+    public int Spacing { get; set; }
 
-    private readonly float _deviationX;
-    private readonly float _deviationY;
-    private readonly float _deviationZ;
+    /// <summary>
+    /// Minimum number of arms
+    /// </summary>
+    public int MinimumArms { get; set; }
 
-    public Spiral(GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, Texture2D inStarColour) : base(inRandom, inStarColour)
+    /// <summary>
+    /// Maximum number of arms
+    /// </summary>
+    public int MaximumArms { get; set; }
+
+    public float ClusterCountDeviation { get; set; }
+    public float ClusterCenterDeviation { get; set; }
+
+    public float MinArmClusterScale { get; set; }
+    public float ArmClusterScaleDeviation { get; set; }
+    public float MaxArmClusterScale { get; set; }
+
+    public float Swirl { get; set; }
+
+    public float CenterClusterScale { get; set; }
+    public float CenterClusterDensityMean { get; set; }
+    public float CenterClusterDensityDeviation { get; set; }
+    public float CenterClusterSizeDeviation { get; set; }
+
+    public float CenterClusterPositionDeviation { get; set; }
+    public float CenterClusterCountDeviation { get; set; }
+    public float CenterClusterCountMean { get; set; }
+
+    public float CentralVoidSizeMean { get; set; }
+    public float CentralVoidSizeDeviation { get; set; }
+    public float InnerNucleusDeviation { get; set; }
+
+    public Spiral(GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, Texture2D inStarColour, float inNucleusRadiusDeviation = 0.25f, float inStarsInNucleus = 0.5f, float inInnerNucleusDeviation = 0.9f) : base(inRandom, inStarColour)
     {
 
-        _size = GalaxyHelpers.GetMax(inGalaxyRadius);
-        _densityMean = 0.25f;
-        _densityDeviation = 0.1f;
-        _deviationX = 0.25f;
-        _deviationY = 0.25f;
-        _deviationZ = 0.25f;
+        Size = (int)inGalaxyRadius.magnitude;
+        Spacing = 5;
 
-        Generate(inNumberOfStars, inGalaxyRadius);
+        MinimumArms = 3;
+        MaximumArms = 7;
+
+        InnerNucleusDeviation = inInnerNucleusDeviation;
+
+        ClusterCountDeviation = 0.35f;
+        ClusterCenterDeviation = 0.2f;
+
+        MinArmClusterScale = 0.02f;
+        ArmClusterScaleDeviation = 0.02f;
+        MaxArmClusterScale = 0.1f;
+
+        Swirl = (float)Mathf.PI * 4;
+
+        CenterClusterScale = 0.19f;
+        CenterClusterDensityMean = 0.05f;
+        CenterClusterDensityDeviation = 0.015f;
+        CenterClusterSizeDeviation = 0.00125f;
+
+        CenterClusterCountMean = 25f;
+        CenterClusterCountDeviation = 7f;
+        CenterClusterPositionDeviation = 0.125f;
+
+        CentralVoidSizeMean = 25;
+        CentralVoidSizeDeviation = 7;
+
+        Generate(inNumberOfStars, inGalaxyRadius, inNucleusRadiusDeviation, inStarsInNucleus, inGalaxyRadius.x, inGalaxyRadius.y, inGalaxyRadius.z);
     }
 
-    override public void Generate(int inNumberOfStars, Vector3 inGalaxyRadius, float countMean = 0.0000025f, float countDeviation = 0.000001f,
-            float deviationX = 0.0000025f, float deviationY = 0.0000025f, float deviationZ = 0.0000025f
+    override public void Generate(int inStarCount, Vector3 inGalaxyRadius, float inNucleusRadiusDeviation = 10f, float inStarsInNucleus = 1f,
+            float deviationX = 0.025f, float deviationY = 0.025f, float deviationZ = 0.025f
         )
     {
-        var count = Mathf.Max(0, GalaxySystemRand.NormallyDistributedSingle(countDeviation, countMean));
+        float galaxyRadius = inGalaxyRadius.magnitude;
+        float nucleusRadius = galaxyRadius * inNucleusRadiusDeviation;
+        int starsinNucleus = (int)(inStarCount * inStarsInNucleus);
+        int starsInDisc = inStarCount - starsinNucleus;
 
-        for (int i = 0; i < count; i++)
+        Vector3 center = Vector3.zero;
+
+        foreach (var star in GenerateArms(starsInDisc, nucleusRadius, InnerNucleusDeviation, galaxyRadius, deviationX, deviationY, deviationZ))
         {
-            Vector3 center = new Vector3(
-                GalaxySystemRand.NormallyDistributedSingle(_deviationX, 0) * _size,
-                GalaxySystemRand.NormallyDistributedSingle(_deviationY, 0) * _size,
-                GalaxySystemRand.NormallyDistributedSingle(_deviationZ, 0 * _size)
-            );
-
-
-            foreach (var star in GenerateNucleus(inNumberOfStars, _size, _densityMean, _densityDeviation, _deviationX, _deviationY, _deviationZ))
-            {
-                star.Offset(center);
-            }
+            star.Offset(center);
+            star.SetColor(star.ConvertTemperature());
+            Stars.Add(star);
         }
+
+            //foreach (var star in GenerateNucleus(starsinNucleus, nucleusRadius))
+            //{
+            //    star.Offset(center);
+            //    star.SetColor(star.ConvertTemperature());
+            //    Stars.Add(star);
+            //}
+
+            //foreach (var star in GenerateDisc(starsInDisc, nucleusRadius, InnerNucleusDeviation, galaxyRadius, deviationX, deviationY, deviationZ))
+            //{
+            //    star.Offset(center);
+            //    star.Swirl(Vector3.up, Swirl);
+            //    //star.Offset(center);
+            //    star.SetColor(star.ConvertTemperature());
+            //   Stars.Add(star);
+            //}
+    }
+
+    private List<Star> GenerateArms(int inStarCount, float nucleusRadius, float InnerNucleusDeviation = 0.25f, float galaxyRadius = 0.1f, float deviationX = 0.25f, float deviationY = 0.25f, float deviationZ = 0.25f)
+    {
+        float _ArmSpread = 0.8f;
+        float _Rotation = 4f;
+        float _ArmSeparationDistance = 8f;
+
+        List<Star> result = new List<Star>();
+
+        float percentStarInCentre = 60;
+
+        for (int i = 0; i < inStarCount; i++)
+        {
+            //float armsOffetSetMax = 0.5f;
+            //float rotationFactor = 0f;
+
+            float distance = GalaxyRand.Next();
+            distance = distance * (percentStarInCentre / 100);
+            float slopeMod = 0.2f; // between 0 and 1, higher is more linear
+            distance = (Mathf.Pow(distance, 1f / 3f) - 1f) / (1 - slopeMod);
+
+            // Choose an angle between 0 and 2 * PI.
+            float angle = GalaxyRand.Next() * 2.0f * Mathf.PI;
+            float armOffset = GalaxyRand.Next() * _ArmSpread;
+
+            armOffset = armOffset - _ArmSpread / 2;
+            armOffset = armOffset * (1 / distance);
+
+            float squaredArmOffset = Mathf.Pow(armOffset, 2);
+
+            if (armOffset < 0)
+                squaredArmOffset = squaredArmOffset * -1;
+            armOffset = squaredArmOffset;
+
+            float rotation = distance * _Rotation;
+
+            // Compute the angle of the arms.
+            angle = (int)(angle / _ArmSeparationDistance) * _ArmSeparationDistance + armOffset + rotation;
+
+            // Convert polar coordinates to 2D cartesian coordinates.
+            float x = ((Mathf.Sin(angle) * distance) * deviationX);
+            float z = ((Mathf.Cos(angle) * distance) * deviationZ);
+
+            float distanceFromCentre = new Vector2(x, z).magnitude;
+            if (galaxyRadius < distanceFromCentre)
+            {
+                distanceFromCentre = galaxyRadius;
+            }
+            float distanceFromCentreScalar = nucleusRadius * (1 - (distanceFromCentre / galaxyRadius));
+            float y = GalaxyRand.InsideUnitSphere(true).y * distanceFromCentreScalar;
+
+            Vector3 starPos = new Vector3(x, y, z);
+
+            var d = starPos.magnitude / galaxyRadius;
+            var m = d * 2000 + (1 - d) * 15000;
+            var t = GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
+            Color starColor = Color.magenta;
+            result.Add(new Star(GenerateStarName.Generate(GalaxySystemRand), starPos, starColor, t));
+        }
+        return result;
     }
 
     /*

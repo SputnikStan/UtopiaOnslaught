@@ -79,7 +79,7 @@ public class Galaxy : MonoBehaviour
             case GALXAYTYPES.Spiral:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, ((inGalaxyRadius * inFlatness) / 100.0f), inGalaxyRadius);
-                    mGalaxy = new Spiral(mRandom, inNumberOfStars, dimensions, inStarColour);
+                    mGalaxy = new Spiral(mRandom, inNumberOfStars, dimensions, inStarColour, NucleusRadiusDeviation, StarsInNucleus, InnerNucleusDeviation);
                 }
                 break;
             case GALXAYTYPES.Sombrero:

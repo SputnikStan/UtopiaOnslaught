@@ -94,7 +94,7 @@ abstract public class GalaxyBase
             float angle = GalaxyRand.Next() * Mathf.PI * 2.0f;
             float x = Mathf.Cos(angle) * distanceX;
             float y = starPosUnit.y * deviationY;
-            float z = Mathf.Sin(angle) * distanceX;
+            float z = Mathf.Sin(angle) * distanceZ;
 
             Vector3 starPos = new Vector3(x, y, z);
 

@@ -118,7 +118,7 @@ abstract public class GalaxyBase
         return result;
     }
 
-    private double Pow3Constrained(double _X)
+    protected double Pow3Constrained(double _X)
     {
         double value = System.Math.Pow(_X - 0.5, 3) * 4 + 0.5d;
         return System.Math.Max(System.Math.Min(1, value), 0);

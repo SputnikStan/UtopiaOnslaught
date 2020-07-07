@@ -157,8 +157,8 @@ MonoBehaviour:
   NumberOfArms: 2
   MaxClusters: 10
   MinClusters: 2
-  NucleusRadiusDeviation: 0.25
-  StarsInNucleus: 0.2
+  NucleusRadiusDeviation: 0.5
+  StarsInNucleus: 0.5
   InnerNucleusDeviation: 0.6
   Dimensions: 100
   Flatness: 10

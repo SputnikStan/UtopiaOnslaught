@@ -53,7 +53,7 @@ public class Spiral : GalaxyBase
         Size = (int)inGalaxyRadius.magnitude;
         Spacing = 5;
 
-        MinimumArms = 3;
+        MinimumArms = 2;
         MaximumArms = 7;
 
         InnerNucleusDeviation = inInnerNucleusDeviation;
@@ -93,214 +93,120 @@ public class Spiral : GalaxyBase
 
         Vector3 center = Vector3.zero;
 
-        foreach (var star in GenerateArms(starsInDisc, nucleusRadius, InnerNucleusDeviation, galaxyRadius, deviationX, deviationY, deviationZ))
+        int numArms = (int)GalaxyRand.Range(MinimumArms, MaximumArms);
+        float angleIncrement = (float)(2 * Mathf.PI / numArms);
+        float Angle = 20;
+        float AngleOffset = 0;
+
+        for (int i = 0; i < numArms; i++)
+        {
+            foreach (var star in GenerateArm(starsInDisc, Angle, AngleOffset, galaxyRadius, (nucleusRadius * InnerNucleusDeviation)))
+            {
+                star.Offset(center);
+                //star.Swirl(Vector3.up, Swirl * 5);
+                star.SetColor(star.ConvertTemperature());
+                Stars.Add(star);
+            }
+
+            AngleOffset += angleIncrement;
+        }
+
+        foreach (var star in GenerateNucleus(starsinNucleus, nucleusRadius))
         {
             star.Offset(center);
             star.SetColor(star.ConvertTemperature());
             Stars.Add(star);
         }
-
-            //foreach (var star in GenerateNucleus(starsinNucleus, nucleusRadius))
-            //{
-            //    star.Offset(center);
-            //    star.SetColor(star.ConvertTemperature());
-            //    Stars.Add(star);
-            //}
-
-            //foreach (var star in GenerateDisc(starsInDisc, nucleusRadius, InnerNucleusDeviation, galaxyRadius, deviationX, deviationY, deviationZ))
-            //{
-            //    star.Offset(center);
-            //    star.Swirl(Vector3.up, Swirl);
-            //    //star.Offset(center);
-            //    star.SetColor(star.ConvertTemperature());
-            //   Stars.Add(star);
-            //}
     }
 
-    private List<Star> GenerateArms(int inStarCount, float nucleusRadius, float InnerNucleusDeviation = 0.25f, float galaxyRadius = 0.1f, float deviationX = 0.25f, float deviationY = 0.25f, float deviationZ = 0.25f)
+    private List<Star> GenerateArm(int inStarCount, float inAngle = 2.0f, float inAngleOffset = 0f, float inMaxRadius = 45, float nucleusRadius = 0.25f)
     {
-        float _ArmSpread = 0.8f;
-        float _Rotation = 4f;
-        float _ArmSeparationDistance = 8f;
+        int totalStars = inStarCount;
+
+        float A = inAngle;
+        float angle_offset = inAngleOffset;
+        float max_r = inMaxRadius;
 
         List<Star> result = new List<Star>();
 
-        float percentStarInCentre = 60;
+        List<Vector3> points = new List<Vector3>();
 
-        for (int i = 0; i < inStarCount; i++)
+        const float dtheta = (float)(5 * Mathf.PI / 180);    // Five degrees.
+        for (float theta = 0; ; theta += dtheta)
         {
-            //float armsOffetSetMax = 0.5f;
-            //float rotationFactor = 0f;
+            // Calculate r.
+            float r = A * theta;
+            // Convert to Cartesian coordinates.
+            Vector3 pos =  PolarToCartesian(r, theta + angle_offset);
 
-            float distance = GalaxyRand.Next();
-            distance = distance * (percentStarInCentre / 100);
-            float slopeMod = 0.2f; // between 0 and 1, higher is more linear
-            distance = (Mathf.Pow(distance, 1f / 3f) - 1f) / (1 - slopeMod);
-
-            // Choose an angle between 0 and 2 * PI.
-            float angle = GalaxyRand.Next() * 2.0f * Mathf.PI;
-            float armOffset = GalaxyRand.Next() * _ArmSpread;
-
-            armOffset = armOffset - _ArmSpread / 2;
-            armOffset = armOffset * (1 / distance);
-
-            float squaredArmOffset = Mathf.Pow(armOffset, 2);
-
-            if (armOffset < 0)
-                squaredArmOffset = squaredArmOffset * -1;
-            armOffset = squaredArmOffset;
-
-            float rotation = distance * _Rotation;
-
-            // Compute the angle of the arms.
-            angle = (int)(angle / _ArmSeparationDistance) * _ArmSeparationDistance + armOffset + rotation;
-
-            // Convert polar coordinates to 2D cartesian coordinates.
-            float x = ((Mathf.Sin(angle) * distance) * deviationX);
-            float z = ((Mathf.Cos(angle) * distance) * deviationZ);
-
-            float distanceFromCentre = new Vector2(x, z).magnitude;
-            if (galaxyRadius < distanceFromCentre)
+            if(pos.magnitude > nucleusRadius)
             {
-                distanceFromCentre = galaxyRadius;
+                points.Add(pos);
             }
-            float distanceFromCentreScalar = nucleusRadius * (1 - (distanceFromCentre / galaxyRadius));
-            float y = GalaxyRand.InsideUnitSphere(true).y * distanceFromCentreScalar;
+            // If we have gone far enough, stop.
+            if (r > max_r) break;
+        }
 
-            Vector3 starPos = new Vector3(x, y, z);
+        int starsPerPoint = totalStars / points.Count;
+        foreach (Vector3 point in points)
+        {
+            float clusterRadius = 5.0f;
 
-            var d = starPos.magnitude / galaxyRadius;
+            foreach (var star in GenerateNucleus(starsPerPoint, clusterRadius, CenterClusterDensityMean, CenterClusterDensityDeviation, clusterRadius, clusterRadius, clusterRadius))
+            {
+                star.Offset(point);
+                result.Add(star);
+            }
+        }
+
+        return result;
+    }
+
+    // Convert polar coordinates into Cartesian coordinates.
+    private Vector3 PolarToCartesian(float r, float theta)
+    {
+        float x = (float)(r * Mathf.Cos(theta));
+        float y = (float)(r * Mathf.Sin(theta));
+
+        return new Vector3(x, 0, y);
+    }
+
+    private List<Star> GenerateArm2(int _NumOfStars, float _Rotation, float _Spin, double _ArmSpread, double _StarsAtCenterRatio, float _Thickness, float _GalaxyScale)
+    {
+        List<Star> result = new List<Star>();
+
+        for (int i = 0; i < _NumOfStars; i++)
+        {
+            double part = (double)i / (double)_NumOfStars;
+            part = System.Math.Pow(part, _StarsAtCenterRatio);
+
+            float distanceFromCenter = (float)part;
+            double position = (part * _Spin + _Rotation) * System.Math.PI * 2;
+
+            double xFluctuation = (Pow3Constrained(GalaxyRand.NextDouble()) - Pow3Constrained(GalaxyRand.NextDouble())) * _ArmSpread;
+            double yFluctuation = (Pow3Constrained(GalaxyRand.NextDouble()) - Pow3Constrained(GalaxyRand.NextDouble())) * _Thickness;
+            double zFluctuation = (Pow3Constrained(GalaxyRand.NextDouble()) - Pow3Constrained(GalaxyRand.NextDouble())) * _ArmSpread;
+
+            float resultX = (float)System.Math.Cos(position) * distanceFromCenter / 2;
+            float resultY = (float)0;
+            float resultZ = (float)System.Math.Sin(position) * distanceFromCenter / 2;
+
+            Vector3 armPos = new Vector3(resultX, 0, resultZ);
+            Vector3 resultPos = new Vector3(((armPos.x + (float)xFluctuation)), 0, ((armPos.z + (float)zFluctuation)));
+            //Vector3 starPos = resultPos * _GalaxyScale;
+            Vector3 starPos = new Vector3(((resultX + (float)xFluctuation)), ((resultY + (float)yFluctuation)), ((resultZ + (float)zFluctuation)));
+            starPos = resultPos * _GalaxyScale;
+
+            var d = starPos.magnitude / _GalaxyScale;
             var m = d * 2000 + (1 - d) * 15000;
             var t = GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
+
             Color starColor = Color.magenta;
-            result.Add(new Star(GenerateStarName.Generate(GalaxySystemRand), starPos, starColor, t));
-        }
-        return result;
-    }
+            Star star = new Star(GenerateStarName.Generate(GalaxySystemRand), starPos, starColor, t);
 
-    /*
-    private Star[] GenerateArms(int _NumOfStars, float _Rotation, float _ArmSpread, float _ArmSeparationDistance, float _Thickness, float _GalaxyScale)
-    {
-        float percentStarInCentre = 100;
-        Star[] result = new Star[_NumOfStars];
-
-        for (int i = 0; i < _NumOfStars; i++)
-        {
-            //float armsOffetSetMax = 0.5f;
-            //float rotationFactor = 0f;
-
-            float distance = mRandom.Next();
-            distance = distance * (percentStarInCentre / 100);
-            float slopeMod = 0.2f; // between 0 and 1, higher is more linear
-            distance = (Mathf.Pow(distance, 1f / 3f) - 1f) / (1 - slopeMod);
-
-            // Choose an angle between 0 and 2 * PI.
-            float angle = mRandom.Next() * 2 * Mathf.PI;
-            float armOffset = mRandom.Next() * _ArmSpread;
-
-            armOffset = armOffset - _ArmSpread / 2;
-            armOffset = armOffset * (1 / distance);
-
-            float squaredArmOffset = Mathf.Pow(armOffset, 2);
-
-            if (armOffset < 0)
-                squaredArmOffset = squaredArmOffset * -1;
-            armOffset = squaredArmOffset;
-
-            float rotation = distance * _Rotation;
-
-            // Compute the angle of the arms.
-            angle = (int)(angle / _ArmSeparationDistance) * _ArmSeparationDistance + armOffset + rotation;
-
-            // Convert polar coordinates to 2D cartesian coordinates.
-            float x = ((Mathf.Sin(angle) * distance) * _GalaxyScale);
-            float z = ((Mathf.Cos(angle) * distance) * _GalaxyScale);
-
-            float distanceFromCentre = new Vector2(x, z).magnitude;
-            if (_GalaxyScale < distanceFromCentre)
-            {
-                distanceFromCentre = _GalaxyScale;
-            }
-            float distanceFromCentreScalar = _Thickness * (1 - (distanceFromCentre / _GalaxyScale));
-            float y = mRandom.InsideUnitSphere(true).y * distanceFromCentreScalar;
-
-            Vector3 starPos = new Vector3(x, y, z);
-
-            Color starColor = Color.white;
-            if (StarColor != null)
-            {
-                float fIndex = (((Mathf.Abs(armOffset) / _ArmSpread)) * (float)StarColor.width);
-                int colorIndex = (int)Mathf.Clamp(fIndex, 0, (float)StarColor.width);
-
-                starColor = StarColor.GetPixel(colorIndex, 0);
-            }
-
-            result[i] = new Star("Star Name", starPos, starColor);
+            result.Add(star);
         }
 
         return result;
     }
-
-    private Star[] GenerateArm(int _NumOfStars, float _Rotation, float _ArmSpread, float _ArmSeparationDistance, float _Thickness, float _GalaxyScale)
-    {
-        float percentStarInCentre = 100;
-        Star[] result = new Star[_NumOfStars];
-
-        for (int i = 0; i < _NumOfStars; i++)
-        {
-            //float armsOffetSetMax = 0.5f;
-            //float rotationFactor = 0f;
-
-            float distance = mRandom.Next();
-            distance = distance * ( percentStarInCentre / 100);
-            float slopeMod = 0.2f; // between 0 and 1, higher is more linear
-            distance = (Mathf.Pow(distance, 1f / 3f) - 1f) / (1 - slopeMod);
-
-            // Choose an angle between 0 and 2 * PI.
-            float angle = mRandom.Next() * 2 * Mathf.PI;
-            float armOffset = mRandom.Next() * _ArmSpread;
-
-            armOffset = armOffset - _ArmSpread / 2;
-            armOffset = armOffset * (1 / distance);
-
-            float squaredArmOffset = Mathf.Pow(armOffset, 2);
-
-            if (armOffset < 0)
-                squaredArmOffset = squaredArmOffset * -1;
-            armOffset = squaredArmOffset;
-
-            float rotation = distance * _Rotation;
-
-            // Compute the angle of the arms.
-            angle = (int)(angle / _ArmSeparationDistance) * _ArmSeparationDistance + armOffset + rotation;
-
-            // Convert polar coordinates to 2D cartesian coordinates.
-            float x = ((Mathf.Sin(angle) * distance) * _GalaxyScale);
-            float z = ((Mathf.Cos(angle) * distance) * _GalaxyScale);
-
-            float distanceFromCentre = new Vector2(x,z).magnitude;
-            if(_GalaxyScale < distanceFromCentre)
-            {
-                distanceFromCentre = _GalaxyScale;
-            }
-            float distanceFromCentreScalar = _Thickness * (1 - (distanceFromCentre / _GalaxyScale));
-            float y = mRandom.InsideUnitSphere(true).y * distanceFromCentreScalar;
-
-            Vector3 starPos = new Vector3(x, y, z);
-
-            Color starColor = Color.white;
-            if (StarColor != null)
-            {
-                float fIndex = (((Mathf.Abs(armOffset) / _ArmSpread)) * (float)StarColor.width);
-                int colorIndex = (int)Mathf.Clamp(fIndex, 0, (float)StarColor.width);
-
-                starColor = StarColor.GetPixel(colorIndex, 0);
-            }
-
-            result[i] = new Star("Star Name", starPos, starColor);
-        }
-
-        return result;
-    }
-    */
 }

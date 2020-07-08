@@ -24,6 +24,9 @@ public class Cluster : GalaxyBase
     /// </summary>
     public int MaximumArms { get; set; }
 
+    public int ClusterMax { get; set; }
+    public int ClusterMin { get; set; }
+
     public float ClusterCountDeviation { get; set; }
     public float ClusterCenterDeviation { get; set; }
 
@@ -45,7 +48,8 @@ public class Cluster : GalaxyBase
     public float CentralVoidSizeMean { get; set; }
     public float CentralVoidSizeDeviation { get; set; }
 
-    public Cluster( GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, Texture2D inStarColour, int inClusterMin = 5, int inClusterMax = 10) : base(inRandom, inStarColour)
+    public Cluster( GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, Texture2D inStarColour, int inClusterMin = 5, int inClusterMax = 10)
+     : base(inRandom, inNumberOfStars, inGalaxyRadius)
     {
 
         Size = (int)GalaxyHelpers.GetMax(inGalaxyRadius); 
@@ -75,17 +79,15 @@ public class Cluster : GalaxyBase
         CentralVoidSizeMean = 25;
         CentralVoidSizeDeviation = 7;
 
-        Generate(inNumberOfStars, inGalaxyRadius, inClusterMin, inClusterMax, inGalaxyRadius.x * CenterClusterPositionDeviation, inGalaxyRadius.y * CenterClusterPositionDeviation, inGalaxyRadius.z * CenterClusterPositionDeviation);
+        Generate();
     }
 
-    override public void Generate(int inStarCount, Vector3 inGalaxyRadius, float inClusterMin = 10f, float inClusterMax = 1f,
-            float deviationX = 0.025f, float deviationY = 0.025f, float deviationZ = 0.025f
-        )
+    override public void Generate()
     {
-        int totalStars = inStarCount;
+        int totalStars = NumberOfStars;
 
-        int starsInCluster = (int)(inStarCount / GalaxyRand.Range(inClusterMin, inClusterMax));
-        float galaxyRadius = GalaxyHelpers.GetMax(inGalaxyRadius);
+        int starsInCluster = (int)(NumberOfStars / GalaxyRand.Range(ClusterMin, ClusterMax));
+        float galaxyRadius = GalaxyHelpers.GetMax(GalaxyRadius);
 
         while (totalStars > 0)
         {
@@ -96,7 +98,7 @@ public class Cluster : GalaxyBase
             center.y *= radius;
             center.z *= radius;
 
-            foreach (var star in GenerateNucleus(starsInCluster, clusterRadius, CenterClusterDensityMean, CenterClusterDensityDeviation, clusterRadius, clusterRadius, clusterRadius))
+            foreach (var star in GenerateNucleus(starsInCluster, new Vector3(clusterRadius,clusterRadius, clusterRadius) ))
             {
                 star.Offset(center);
                 star.SetColor(star.ConvertTemperature());

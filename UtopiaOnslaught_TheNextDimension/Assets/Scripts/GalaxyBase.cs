@@ -5,32 +5,70 @@ using UnityEngine;
 abstract public class GalaxyBase
 {
     public List<Star> Stars { get; private set; }
-    public Texture2D StarColour;
+
+    public int NumberOfStars { get; set; }
+    public Vector3 GalaxyRadius { get; set; }
+
+    //public Texture2D StarColour;
     public GalaxyRandom GalaxyRand { get; private set; }
     public System.Random GalaxySystemRand { get { return GalaxyRand.sm_Rand; } }
 
-    public GalaxyBase(GalaxyRandom inRandom, Texture2D inStarColour)
+    public GalaxyBase(GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius)
     {
         Stars = new List<Star>();
         GalaxyRand = inRandom;
-        StarColour = inStarColour;
+        NumberOfStars = inNumberOfStars;
+        GalaxyRadius = inGalaxyRadius;
+        //StarColour = inStarColour;
     }
 
-    public abstract void Generate(int inStarCount, Vector3 inGalaxyRadius, float countMean = 0.0000025f, float countDeviation = 0.000001f,
-            float deviationX = 0.0000025f, float deviationY = 0.0000025f, float deviationZ = 0.0000025f);
+    public abstract void Generate();
 
-    public List<Star> GenerateNucleus(int inStarCount, float size, float densityMean = 0.25f, float densityDeviation = 0.1f, float deviationX = 0.25f, float deviationY = 0.25f, float deviationZ = 0.25f)
+    public List<Star> GenerateSphere(float _size,
+            float _densityMean = 0.0000025f, float _densityDeviation = 0.000001f,
+            float _deviationX = 0.0000025f,
+            float _deviationY = 0.0000025f,
+            float _deviationZ = 0.0000025f)
+    {
+        List<Star> result = new List<Star>();
+
+        var density = Mathf.Max(0, GalaxySystemRand.NormallyDistributedSingle(_densityDeviation, _densityMean));
+        var countMax = Mathf.Max(0, (int)(_size * _size * _size * density));
+
+        var count = GalaxySystemRand.Next(countMax);
+
+        for (int i = 0; i < count; i++)
+        {
+            var pos = new Vector3(
+                GalaxySystemRand.NormallyDistributedSingle(_deviationX * _size, 0),
+                GalaxySystemRand.NormallyDistributedSingle(_deviationY * _size, 0),
+                GalaxySystemRand.NormallyDistributedSingle(_deviationZ * _size, 0)
+            );
+            var d = pos.magnitude / _size;
+            var m = d * 2000 + (1 - d) * 15000;
+            var t = GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
+
+            Color starColor = Color.magenta;
+            Star star = new Star(GenerateStarName.Generate(GalaxySystemRand), pos, starColor, t);
+
+            result.Add(star);
+        }
+
+        return result;
+    }
+
+    public List<Star> GenerateNucleus(int inStarCount, Vector3 inRadius)
     {
         List<Star> result = new List<Star>();
 
         for (int i = 0; i < inStarCount; i++)
         {
-            Vector3 starPos = GalaxyRand.InsideUnitSphere(true);
-            starPos.x *= size;
-            starPos.y *= size;
-            starPos.z *= size;
+            Vector3 starPos = GalaxyRand.InsideUnitSphere(false);
+            starPos.x *= inRadius.x;
+            starPos.y *= inRadius.y;
+            starPos.z *= inRadius.z;
 
-            var d = starPos.magnitude / size;
+            var d = starPos.magnitude / inRadius.magnitude;
             var m = d * 2000 + (1 - d) * 15000;
             var t = GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
 
@@ -124,4 +162,8 @@ abstract public class GalaxyBase
         return System.Math.Max(System.Math.Min(1, value), 0);
     }
 
+    public static float GetMax(Vector3 v3)
+    {
+        return Mathf.Max(Mathf.Max(v3.x, v3.y), v3.z);
+    }
 }

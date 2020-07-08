@@ -19,8 +19,15 @@ public class Galaxy : MonoBehaviour
     public int NumberOfArms = 2;
     public int MaxClusters = 10;
     public int MinClusters = 5;
+    
+    public float NucleusRadius = 10.0f;
     public float NucleusRadiusDeviation = 0.25f;
     public float StarsInNucleus = 0.5f;
+
+    public float ArmRadiusDeviation = 0.25f;
+    public float ArmSpread = 0.25f;
+
+
     public float InnerNucleusDeviation = 0.9f;
     public float Dimensions = 1024;
     public float Flatness = 10.0f;  // Percentage of Y
@@ -51,10 +58,10 @@ public class Galaxy : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        //DrawGalaxyBounds();
-    }
+    //void Update()
+    //{
+    //    //DrawGalaxyBounds();
+    //}
 
     public void Generate(GALXAYTYPES inGalaxyType, int inNumberOfStars, float inGalaxyRadius, float inFlatness, Texture2D inStarColour, int inNumberOfArms = 0)
     {
@@ -78,8 +85,9 @@ public class Galaxy : MonoBehaviour
                 break;
             case GALXAYTYPES.Spiral:
                 {
-                    Vector3 dimensions = new Vector3(inGalaxyRadius, ((inGalaxyRadius * inFlatness) / 100.0f), inGalaxyRadius);
-                    mGalaxy = new Spiral(mRandom, inNumberOfStars, dimensions, inStarColour, NucleusRadiusDeviation, StarsInNucleus, InnerNucleusDeviation);
+                    Vector3 dimensions = new Vector3(inGalaxyRadius, inGalaxyRadius, inGalaxyRadius);
+                    mGalaxy = new Spiral(mRandom, inNumberOfStars, dimensions, NumberOfArms, StarsInNucleus, NucleusRadius, NucleusRadiusDeviation, NucleusRadius * ArmRadiusDeviation, ArmRadiusDeviation, ArmSpread);
+                    //                    float inArmNucleusDeviation = 0.25f, float inArmRadius = 0.5f, float inArmRadiusDeviation = 0.9f, float inArmSpread = 0.5f
                 }
                 break;
             case GALXAYTYPES.Sombrero:

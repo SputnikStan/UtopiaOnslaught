@@ -154,11 +154,14 @@ MonoBehaviour:
   mGalaxyParticles: {fileID: 2069276923}
   Seed: 6666
   NumberOfStars: 10000
-  NumberOfArms: 2
+  NumberOfArms: 3
   MaxClusters: 10
   MinClusters: 2
+  NucleusRadius: 5
   NucleusRadiusDeviation: 0.5
-  StarsInNucleus: 0.5
+  StarsInNucleus: 0.2
+  ArmRadiusDeviation: 0.5
+  ArmSpread: 0.25
   InnerNucleusDeviation: 0.6
   Dimensions: 100
   Flatness: 10

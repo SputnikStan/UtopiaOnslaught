@@ -92,11 +92,16 @@ public class Spiral : GalaxyBase
         int starsPerPoint = totalStars / points.Count;
         foreach (Vector3 point in points)
         {
-            float clusterRadius = inArmRadius;
+            Vector3 centre = new Vector3(point.x, 0, point.z);
 
-            foreach (var star in GenerateNucleus(starsPerPoint, new Vector3( clusterRadius, clusterRadius, clusterRadius) ))
+            int starsInPointNucleus = (int)((float)starsPerPoint * (1.0f - (point.y / max_r)));
+            float clusterRadius = inArmRadius;  // * (1 - (point.y / max_r));
+
+            List<Star> list = GenerateNucleus(starsInPointNucleus, new Vector3(clusterRadius, clusterRadius, clusterRadius));
+            for (int i = 0; i < list.Count; i++)
             {
-                star.Offset(point);
+                Star star = list[i];
+                star.Offset(centre);
                 result.Add(star);
             }
         }
@@ -110,7 +115,7 @@ public class Spiral : GalaxyBase
         float x = (float)(r * Mathf.Cos(theta));
         float y = (float)(r * Mathf.Sin(theta));
 
-        return new Vector3(x, 0, y);
+        return new Vector3(x, r, y);
     }
 
     private List<Star> GenerateArm2(int _NumOfStars, float _Rotation, float _Spin, double _ArmSpread, double _StarsAtCenterRatio, float _Thickness, float _GalaxyScale)

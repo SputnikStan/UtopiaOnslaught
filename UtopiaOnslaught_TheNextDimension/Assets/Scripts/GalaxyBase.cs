@@ -44,9 +44,8 @@ abstract public class GalaxyBase
                 GalaxySystemRand.NormallyDistributedSingle(_deviationY * _size, 0),
                 GalaxySystemRand.NormallyDistributedSingle(_deviationZ * _size, 0)
             );
-            var d = pos.magnitude / _size;
-            var m = d * 2000 + (1 - d) * 15000;
-            var t = GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
+
+            float t = CalculateTemperature(pos.magnitude, _size);
 
             Color starColor = Color.magenta;
             Star star = new Star(GenerateStarName.Generate(GalaxySystemRand), pos, starColor, t);
@@ -57,20 +56,18 @@ abstract public class GalaxyBase
         return result;
     }
 
-    public List<Star> GenerateNucleus(int inStarCount, Vector3 inRadius)
+    public List<Star> GenerateNucleus(int inStarCount, Vector3 inRadius, bool inUniform = false)
     {
         List<Star> result = new List<Star>();
 
         for (int i = 0; i < inStarCount; i++)
         {
-            Vector3 starPos = GalaxyRand.InsideUnitSphere(false);
+            Vector3 starPos = GalaxyRand.InsideUnitSphere(inUniform);
             starPos.x *= inRadius.x;
             starPos.y *= inRadius.y;
             starPos.z *= inRadius.z;
 
-            var d = starPos.magnitude / inRadius.magnitude;
-            var m = d * 2000 + (1 - d) * 15000;
-            var t = GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
+            float t = CalculateTemperature(starPos.magnitude, inRadius.magnitude);
 
             Color starColor = Color.magenta;
             Star star = new Star(GenerateStarName.Generate(GalaxySystemRand), starPos, starColor, t);
@@ -81,8 +78,8 @@ abstract public class GalaxyBase
         return result;
     }
 
-    public List<Star> GenerateDisc(int inStarCount, float nucleusRadius, float InnerNucleusDeviation = 0.25f, float galaxyRadius = 0.1f, float deviationX = 0.25f, float deviationY = 0.25f, float deviationZ = 0.25f)
-    {
+    public List<Star> GenerateDisc(int inStarCount, float nucleusRadius, float InnerNucleusDeviation, Vector3 inDimensions)
+    { 
         List<Star> result = new List<Star>();
 
         int starsInDisc = inStarCount;
@@ -91,21 +88,17 @@ abstract public class GalaxyBase
         {
             Vector3 starPos = GalaxyRand.InsideUnitSphere(true);
 
-            starPos.x *= deviationX;
-            starPos.y *= deviationY;
-            starPos.z *= deviationZ;
+            starPos.x *= inDimensions.x;
+            starPos.y *= inDimensions.y;
+            starPos.z *= inDimensions.z;
 
             float distance = starPos.magnitude;
             if (distance > (nucleusRadius * InnerNucleusDeviation))
             {
-                var d = starPos.magnitude / galaxyRadius;
-                var m = d * 2000 + (1 - d) * 15000;
-                var t = GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
+                float t = CalculateTemperature(starPos.magnitude, inDimensions.magnitude);
 
                 Color starColor = Color.magenta;
                 Star star = new Star(GenerateStarName.Generate(GalaxySystemRand), starPos, starColor, t);
-
-                star.SetColor(star.ConvertTemperature());
                 result.Add(star);
 
                 starsInDisc--;
@@ -139,9 +132,7 @@ abstract public class GalaxyBase
             float distance = starPos.magnitude;
             //if (distance > (nucleusRadius * InnerNucleusDeviation))
             {
-                var d = starPos.magnitude / galaxyRadius;
-                var m = d * 2000 + (1 - d) * 15000;
-                var t = GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
+                float t = CalculateTemperature(starPos.magnitude, galaxyRadius);
 
                 Color starColor = Color.magenta;
                 Star star = new Star(GenerateStarName.Generate(GalaxySystemRand), starPos, starColor, t);
@@ -165,5 +156,13 @@ abstract public class GalaxyBase
     public static float GetMax(Vector3 v3)
     {
         return Mathf.Max(Mathf.Max(v3.x, v3.y), v3.z);
+    }
+
+    public float CalculateTemperature(float inDistance, float inMaxDistance)
+    {
+        float d = inDistance / inMaxDistance;
+        float m = d * 2000.0f + (1 - d) * 15000.0f;
+
+        return GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
     }
 }

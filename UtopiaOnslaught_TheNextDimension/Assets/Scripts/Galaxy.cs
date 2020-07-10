@@ -17,16 +17,21 @@ public class Galaxy : MonoBehaviour
     public int Seed = 6666;
     public int NumberOfStars = 1000;
     public int NumberOfArms = 2;
-    public int MaxClusters = 10;
-    public int MinClusters = 5;
     
     public float NucleusRadius = 10.0f;
     public float NucleusRadiusDeviation = 0.25f;
     public float StarsInNucleus = 0.5f;
 
-    public float ArmRadiusDeviation = 0.25f;
-    public float ArmSpread = 0.25f;
+    public float StarsInArms = 0.7f;
 
+    public float ArmRadiusDeviation = 0.25f;
+    public float ArmSpread = 1f;
+
+    public int ClusterMin = 3;
+    public int ClusterMax = 7;
+
+    public float ClusterRadiusMin = 0.25f;
+    public float ClusterRadiusMax = 0.5f;
 
     public float InnerNucleusDeviation = 0.9f;
     public float Dimensions = 1024;
@@ -70,24 +75,36 @@ public class Galaxy : MonoBehaviour
 
         switch(inGalaxyType)
         {
+            case GALXAYTYPES.Cluster:
+                {
+                    Vector3 dimensions = new Vector3(inGalaxyRadius, inGalaxyRadius, inGalaxyRadius);
+
+                    mGalaxy = new Cluster(mRandom, inNumberOfStars, dimensions, ClusterRadiusMin, ClusterRadiusMax, ClusterMin, ClusterMax);
+                }
+                break;
             case GALXAYTYPES.Sphere:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, inGalaxyRadius, inGalaxyRadius);
 
-                    mGalaxy = new Cluster(mRandom, inNumberOfStars, dimensions, inStarColour, 1, 1);
+                    mGalaxy = new Cluster(mRandom, inNumberOfStars, dimensions, ClusterRadiusMin, ClusterRadiusMax, 1, 1);
                 }
                 break;
             case GALXAYTYPES.Disc:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, ((inGalaxyRadius * inFlatness) / 100.0f), inGalaxyRadius);
-                    mGalaxy = new Disc(mRandom, inNumberOfStars, dimensions, inStarColour, NucleusRadiusDeviation, StarsInNucleus, InnerNucleusDeviation);
+                    mGalaxy = new Disc(mRandom, inNumberOfStars, dimensions, NumberOfArms, StarsInNucleus, StarsInArms,
+                                        NucleusRadius, NucleusRadiusDeviation,
+                                        NucleusRadius * ArmRadiusDeviation, ArmRadiusDeviation, ArmSpread,
+                                        Flatness);
                 }
                 break;
             case GALXAYTYPES.Spiral:
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, inGalaxyRadius, inGalaxyRadius);
-                    mGalaxy = new Spiral(mRandom, inNumberOfStars, dimensions, NumberOfArms, StarsInNucleus, NucleusRadius, NucleusRadiusDeviation, NucleusRadius * ArmRadiusDeviation, ArmRadiusDeviation, ArmSpread);
-                    //                    float inArmNucleusDeviation = 0.25f, float inArmRadius = 0.5f, float inArmRadiusDeviation = 0.9f, float inArmSpread = 0.5f
+                    mGalaxy = new Spiral(mRandom, inNumberOfStars, dimensions, NumberOfArms, StarsInNucleus, StarsInArms,
+                                        NucleusRadius, NucleusRadiusDeviation, 
+                                        NucleusRadius * ArmRadiusDeviation, ArmRadiusDeviation, ArmSpread,
+                                        Flatness);
                 }
                 break;
             case GALXAYTYPES.Sombrero:
@@ -100,7 +117,7 @@ public class Galaxy : MonoBehaviour
                 {
                     Vector3 dimensions = new Vector3(inGalaxyRadius, inGalaxyRadius, inGalaxyRadius);
 
-                    mGalaxy = new Cluster(mRandom, inNumberOfStars, dimensions, inStarColour, MinClusters, MaxClusters);
+                    mGalaxy = new Cluster(mRandom, inNumberOfStars, dimensions, ClusterRadiusMin, ClusterRadiusMax, 1, 1);
                 }
                 break;
         }

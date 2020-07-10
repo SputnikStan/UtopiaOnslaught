@@ -7,31 +7,39 @@ public class Spiral : GalaxyBase
 {
 
     public int NumberOfArms { get; set; }
+    public float StarsInArms { get; set; }
     public float StarsInNucleus { get; set; }
     public float NucleusRadius { get; set; }
     public float NucleusDeviation { get; set; }
     public float ArmRadius { get; set; }
     public float ArmRadiusDeviation { get; set; }
     public float ArmSpread { get; set; }
+    public float Flatness { get; set; }
 
-    public Spiral(GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, int inNumberOfArms, float inStarsInNucleus, float inNucleusRadius, float inNucleusDeviation = 0.25f, float inArmRadius = 5f, float inArmRadiusDeviation = 0.9f, float inArmSpread = 0.5f) 
+    public Spiral(GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, int inNumberOfArms, float inStarsInNucleus, float inStarsInArms, 
+                    float inNucleusRadius, float inNucleusDeviation = 0.25f, 
+                    float inArmRadius = 5f, float inArmRadiusDeviation = 0.9f, float inArmSpread = 0.5f, 
+                    float inFlatness = 0.25f) 
         : base(inRandom, inNumberOfStars, inGalaxyRadius)
     {
         NumberOfArms = inNumberOfArms;
         StarsInNucleus = inStarsInNucleus;
+        StarsInArms = inStarsInArms;
         NucleusRadius = inNucleusRadius;
         NucleusDeviation = inNucleusDeviation;
         ArmRadius = inArmRadius;
         ArmRadiusDeviation = inArmRadiusDeviation;
         ArmSpread = inArmSpread;
+        Flatness = inFlatness;
 
         Generate();
     }
 
     override public void Generate( )
     {
-        int starsinNucleus = (int)(NumberOfStars * StarsInNucleus);
-        int starsInDisc = NumberOfStars - starsinNucleus;
+        int starsInArms = (int)(NumberOfStars * StarsInArms);
+        int starsinNucleus = (int)(( NumberOfStars - starsInArms) * StarsInNucleus);
+        int starsInDisc = (int)(NumberOfStars - starsInArms - starsinNucleus);
 
         Vector3 center = Vector3.zero;
 
@@ -41,7 +49,7 @@ public class Spiral : GalaxyBase
 
         for (int i = 0; i < NumberOfArms; i++)
         {
-            foreach (var star in GenerateArm(starsInDisc, Angle, AngleOffset, GalaxyBase.GetMax(GalaxyRadius), NucleusRadius * NucleusDeviation, ArmRadius))
+            foreach (var star in GenerateArm(starsInArms, Angle, AngleOffset, GalaxyBase.GetMax(GalaxyRadius), NucleusRadius * NucleusDeviation, ArmRadius, ArmSpread))
             {
                 star.Offset(center);
                 //star.Swirl(Vector3.up, Swirl * 5);
@@ -50,6 +58,15 @@ public class Spiral : GalaxyBase
             }
 
             AngleOffset += angleIncrement;
+        }
+
+        Vector3 disc = new Vector3(GalaxyRadius.x, NucleusRadius * Flatness, GalaxyRadius.z);
+
+        foreach (var star in GenerateDisc(starsInDisc, NucleusRadius, NucleusDeviation, disc))
+        {
+            star.Offset(center);
+            star.SetColor(star.ConvertTemperature());
+            Stars.Add(star);
         }
 
         foreach (var star in GenerateNucleus(starsinNucleus, new Vector3( NucleusRadius, NucleusRadius, NucleusRadius)))
@@ -61,7 +78,7 @@ public class Spiral : GalaxyBase
 
     }
 
-    private List<Star> GenerateArm(int inStarCount, float inAngle = 2.0f, float inAngleOffset = 0f, float inMaxRadius = 45, float nucleusRadius = 0.25f, float inArmRadius = 5)
+    private List<Star> GenerateArm(int inStarCount, float inAngle = 2.0f, float inAngleOffset = 0f, float inMaxRadius = 45, float nucleusRadius = 0.25f, float inArmRadius = 5, float inArmSpread = 1.0f)
     {
         int totalStars = inStarCount;
 
@@ -97,7 +114,7 @@ public class Spiral : GalaxyBase
             int starsInPointNucleus = (int)((float)starsPerPoint * (1.0f - (point.y / max_r)));
             float clusterRadius = inArmRadius;  // * (1 - (point.y / max_r));
 
-            List<Star> list = GenerateNucleus(starsInPointNucleus, new Vector3(clusterRadius, clusterRadius, clusterRadius));
+            List<Star> list = GenerateNucleus(starsInPointNucleus, new Vector3(clusterRadius * inArmSpread, clusterRadius, clusterRadius * inArmSpread), false);
             for (int i = 0; i < list.Count; i++)
             {
                 Star star = list[i];
@@ -116,44 +133,5 @@ public class Spiral : GalaxyBase
         float y = (float)(r * Mathf.Sin(theta));
 
         return new Vector3(x, r, y);
-    }
-
-    private List<Star> GenerateArm2(int _NumOfStars, float _Rotation, float _Spin, double _ArmSpread, double _StarsAtCenterRatio, float _Thickness, float _GalaxyScale)
-    {
-        List<Star> result = new List<Star>();
-
-        for (int i = 0; i < _NumOfStars; i++)
-        {
-            double part = (double)i / (double)_NumOfStars;
-            part = System.Math.Pow(part, _StarsAtCenterRatio);
-
-            float distanceFromCenter = (float)part;
-            double position = (part * _Spin + _Rotation) * System.Math.PI * 2;
-
-            double xFluctuation = (Pow3Constrained(GalaxyRand.NextDouble()) - Pow3Constrained(GalaxyRand.NextDouble())) * _ArmSpread;
-            double yFluctuation = (Pow3Constrained(GalaxyRand.NextDouble()) - Pow3Constrained(GalaxyRand.NextDouble())) * _Thickness;
-            double zFluctuation = (Pow3Constrained(GalaxyRand.NextDouble()) - Pow3Constrained(GalaxyRand.NextDouble())) * _ArmSpread;
-
-            float resultX = (float)System.Math.Cos(position) * distanceFromCenter / 2;
-            float resultY = (float)0;
-            float resultZ = (float)System.Math.Sin(position) * distanceFromCenter / 2;
-
-            Vector3 armPos = new Vector3(resultX, 0, resultZ);
-            Vector3 resultPos = new Vector3(((armPos.x + (float)xFluctuation)), 0, ((armPos.z + (float)zFluctuation)));
-            //Vector3 starPos = resultPos * _GalaxyScale;
-            Vector3 starPos = new Vector3(((resultX + (float)xFluctuation)), ((resultY + (float)yFluctuation)), ((resultZ + (float)zFluctuation)));
-            starPos = resultPos * _GalaxyScale;
-
-            var d = starPos.magnitude / _GalaxyScale;
-            var m = d * 2000 + (1 - d) * 15000;
-            var t = GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
-
-            Color starColor = Color.magenta;
-            Star star = new Star(GenerateStarName.Generate(GalaxySystemRand), starPos, starColor, t);
-
-            result.Add(star);
-        }
-
-        return result;
     }
 }

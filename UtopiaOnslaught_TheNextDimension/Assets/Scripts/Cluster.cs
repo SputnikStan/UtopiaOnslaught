@@ -11,13 +11,17 @@ public class Cluster : GalaxyBase
     public float ClusterRadiusMax { get; set; }
     public float ClusterRadiusMin { get; set; }
 
-    public Cluster( GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, float inClusterRadiusMin, float inClusterRadiusMax, int inClusterMin = 5, int inClusterMax = 10)
+    public float ClusterFlatness { get; set; }
+
+    public Cluster( GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, float inClusterRadiusMin, float inClusterRadiusMax, int inClusterMin = 5, int inClusterMax = 10, float inFlatness = 1.0f)
      : base(inRandom, inNumberOfStars, inGalaxyRadius)
     {
         ClusterMin = inClusterMin;
         ClusterMax = inClusterMax;
         ClusterRadiusMin = inGalaxyRadius.magnitude * inClusterRadiusMin;
         ClusterRadiusMax = inGalaxyRadius.magnitude * inClusterRadiusMax;
+
+        ClusterFlatness = inFlatness;
 
         Generate();
     }
@@ -31,10 +35,10 @@ public class Cluster : GalaxyBase
         int starsInCluster = (int)(NumberOfStars / numberOfClusters);
         float galaxyRadius = GalaxyRadius.magnitude; // GalaxyHelpers.GetMax(GalaxyRadius);
 
-        for(int i=0; i< numberOfClusters; i++)
-        {
-            Vector3 center = GalaxyRand.InsideUnitSphere(true);
+        Vector3 center = Vector3.zero;
 
+        for (int i=0; i< numberOfClusters; i++)
+        {
             float clusterRadius = GalaxyRand.Range(ClusterRadiusMin, ClusterRadiusMax);
 
             float centreScale = GalaxyRand.Range(0, (galaxyRadius - clusterRadius));
@@ -42,13 +46,15 @@ public class Cluster : GalaxyBase
             center.y *= centreScale;
             center.z *= centreScale;
 
-            foreach (Star star in GenerateNucleus(starsInCluster, new Vector3(clusterRadius,clusterRadius, clusterRadius) ))
+            foreach (Star star in GenerateNucleus(starsInCluster, new Vector3(clusterRadius,clusterRadius, clusterRadius), false, ClusterFlatness))
             {
                 star.Offset(center);
                 star.SetColor(star.ConvertTemperature());
                 Stars.Add(star);
                 totalStars--;
             }
+
+            center = GalaxyRand.InsideUnitSphere(true);
         }
     }
 }

@@ -6,6 +6,8 @@ abstract public class GalaxyBase
 {
     public List<Star> Stars { get; private set; }
 
+    public Vector3 Position;
+
     public int NumberOfStars { get; set; }
     public Vector3 GalaxyRadius { get; set; }
 
@@ -19,7 +21,7 @@ abstract public class GalaxyBase
         GalaxyRand = inRandom;
         NumberOfStars = inNumberOfStars;
         GalaxyRadius = inGalaxyRadius;
-        //StarColour = inStarColour;
+        Position = Vector3.zero;
     }
 
     public abstract void Generate();
@@ -56,7 +58,7 @@ abstract public class GalaxyBase
         return result;
     }
 
-    public List<Star> GenerateNucleus(int inStarCount, Vector3 inRadius, bool inUniform = false)
+    public List<Star> GenerateNucleus(int inStarCount, Vector3 inRadius, bool inUniform = false, float inFlatness = 1.0f)
     {
         List<Star> result = new List<Star>();
 
@@ -64,7 +66,7 @@ abstract public class GalaxyBase
         {
             Vector3 starPos = GalaxyRand.InsideUnitSphere(inUniform);
             starPos.x *= inRadius.x;
-            starPos.y *= inRadius.y;
+            starPos.y *= (inRadius.y * inFlatness);
             starPos.z *= inRadius.z;
 
             float t = CalculateTemperature(starPos.magnitude, inRadius.magnitude);
@@ -108,7 +110,7 @@ abstract public class GalaxyBase
         return result;
     }
 
-    public List<Star> GenerateBand(int inStarCount, float nucleusRadius, float InnerNucleusDeviation = 0.25f, float galaxyRadius = 0.1f, float deviationX = 0.25f, float deviationY = 0.25f, float deviationZ = 0.25f)
+    public List<Star> GenerateRing_old(int inStarCount, float nucleusRadius, float InnerNucleusDeviation = 0.25f, float galaxyRadius = 0.1f, float deviationX = 0.25f, float deviationY = 0.25f, float deviationZ = 0.25f)
     {
         List<Star> result = new List<Star>();
 
@@ -147,6 +149,35 @@ abstract public class GalaxyBase
         return result;
     }
 
+    public float GetExtents()
+    {
+        float maxDistance = 0.0f;
+
+        foreach (Star star in Stars)
+        {
+            float distance = Vector3.Distance(Position, star.Position);
+            if(distance > maxDistance)
+            {
+                maxDistance = distance;
+            }
+        }
+
+        return maxDistance;
+    }
+
+    public void GenrateStarColor()
+    {
+        float maxDistance = GetExtents();
+
+        foreach (Star star in Stars)
+        {
+            float distance = Vector3.Distance(Position, star.Position);
+
+            star.mTemperature = CalculateTemperature(distance, maxDistance);
+            star.SetColor(star.ConvertTemperature());
+        }
+    }
+
     protected double Pow3Constrained(double _X)
     {
         double value = System.Math.Pow(_X - 0.5, 3) * 4 + 0.5d;
@@ -164,5 +195,14 @@ abstract public class GalaxyBase
         float m = d * 2000.0f + (1 - d) * 15000.0f;
 
         return GalaxySystemRand.NormallyDistributedSingle(4000, m, 1000, 40000);
+    }
+
+    // Convert polar coordinates into Cartesian coordinates.
+    protected Vector3 PolarToCartesian(float r, float theta)
+    {
+        float x = (float)(r * Mathf.Cos(theta));
+        float y = (float)(r * Mathf.Sin(theta));
+
+        return new Vector3(x, r, y);
     }
 }

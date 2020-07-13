@@ -150,26 +150,42 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b045a7d4ab8f0e489902095e124f914, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mStarColorGradient: {fileID: 2800000, guid: 9cc12debdd72cbe4aaaf035f545770a5, type: 3}
   mGalaxyParticles: {fileID: 2069276923}
-  Seed: 6666
-  NumberOfStars: 10000
-  NumberOfArms: 3
-  NucleusRadius: 15
+  Seed: 746344576
+  NumberOfStars: 50000
+  GalaxyRadius: 100
+  GalaxyType: 2
+  Cluster_CountMin: 3
+  Cluster_CountMax: 15
+  Cluster_RadiusMin: 0.25
+  Cluster_RadiusMax: 0.5
+  Cluster_NucleusRadius: 10
+  Cluster_NucleusRadiusDeviation: 0.25
+  ClusterStarsInNucleus: 0.5
+  Cluster_Flatness: 0.575
+  Spiral_NumberOfArms: 2
+  Spiral_StarsInArms: 0.7
+  Spiral_ArmRadiusDeviation: 0.25
+  Spiral_ArmSpread: 1
+  Spiral_NucleusRadius: 1
+  Spiral_NucleusRadiusDeviation: 0.25
+  Spiral_StarsInNucleus: 0.5
+  Spiral_Flatness: 0.25
+  Sphere_RadiusMin: 0.25
+  Sphere_RadiusMax: 0.5
+  Sphere_Flatness: 0.067
+  mStarColorGradient: {fileID: 2800000, guid: 9cc12debdd72cbe4aaaf035f545770a5, type: 3}
+  NucleusRadius: 5
   NucleusRadiusDeviation: 0.5
-  StarsInNucleus: 0.2
-  StarsInArms: 0.7
-  ArmRadiusDeviation: 0.5
-  ArmSpread: 0.25
-  ClusterMin: 5
-  ClusterMax: 15
-  ClusterRadiusMin: 0.25
-  ClusterRadiusMax: 0.4
+  StarsInNucleus: 0.1
+  StarsInRing: 0.7
+  OuterRadius: 0.7
+  RingRadius: 4
+  RingSpread: 0.7
   InnerNucleusDeviation: 0.6
   Dimensions: 100
   Flatness: 10
   LineMaterial: {fileID: 2100000, guid: 1db76eeb84439db4ca5976617e52ee10, type: 2}
-  GalaxyType: 2
 --- !u!4 &572867000
 Transform:
   m_ObjectHideFlags: 0

@@ -46,10 +46,11 @@ public class Spiral : GalaxyBase
         float angleIncrement = (float)(2 * Mathf.PI / NumberOfArms);
         float Angle = 20;
         float AngleOffset = 0;
+        float galaxyRadius = GalaxyRadius.magnitude;
 
         for (int i = 0; i < NumberOfArms; i++)
         {
-            foreach (var star in GenerateArm(starsInArms, Angle, AngleOffset, GalaxyBase.GetMax(GalaxyRadius), GalaxyBase.GetMax(GalaxyRadius) * ArmRadiusDeviation, ArmRadius, ArmSpread, Flatness))
+            foreach (var star in GenerateArm(starsInArms, Angle, AngleOffset, galaxyRadius, NucleusRadius * NucleusDeviation, ArmRadius, ArmSpread, Flatness))
             {
                 star.Offset(center);
                 //star.Swirl(Vector3.up, Swirl * 5);
@@ -60,21 +61,21 @@ public class Spiral : GalaxyBase
             AngleOffset += angleIncrement;
         }
 
-        Vector3 disc = new Vector3(GalaxyRadius.x, NucleusRadius * Flatness, GalaxyRadius.z);
+        Vector3 disc = new Vector3(GalaxyRadius.x, GalaxyRadius.y, GalaxyRadius.z);
 
-        //foreach (var star in GenerateDisc(starsInDisc, NucleusRadius, NucleusDeviation, disc))
-        //{
-        //    star.Offset(center);
-        //    star.SetColor(star.ConvertTemperature());
-        //    Stars.Add(star);
-        //}
+        foreach (var star in GenerateDisc(starsInDisc, NucleusRadius, NucleusDeviation, galaxyRadius, Flatness))
+        {
+            star.Offset(center);
+            star.SetColor(star.ConvertTemperature());
+            Stars.Add(star);
+        }
 
-        //foreach (var star in GenerateNucleus(starsinNucleus, new Vector3( NucleusRadius, NucleusRadius, NucleusRadius), false))
-        //{
-        //    star.Offset(center);
-        //    star.SetColor(star.ConvertTemperature());
-        //    Stars.Add(star);
-        //}
+        foreach (var star in GenerateNucleus(starsinNucleus, new Vector3( NucleusRadius, NucleusRadius, NucleusRadius), false))
+        {
+            star.Offset(center);
+            star.SetColor(star.ConvertTemperature());
+            Stars.Add(star);
+        }
 
     }
 
@@ -112,9 +113,8 @@ public class Spiral : GalaxyBase
             Vector3 centre = new Vector3(point.x, 0, point.z);
 
             int starsInPointNucleus = (int)((float)starsPerPoint * (1.0f - (point.y / max_r)));
-            float clusterRadius = inArmRadius;  // * (1 - (point.y / max_r));
 
-            List<Star> list = GenerateNucleus(starsInPointNucleus, new Vector3(clusterRadius * inArmSpread, clusterRadius * inArmSpread, clusterRadius * inArmSpread), true, inFlatness);
+            List<Star> list = GenerateNucleus(starsInPointNucleus, new Vector3(inArmRadius * inArmSpread, inArmRadius, inArmRadius * inArmSpread), false);
             for (int i = 0; i < list.Count; i++)
             {
                 Star star = list[i];

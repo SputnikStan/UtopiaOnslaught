@@ -48,7 +48,7 @@ public class Disc : GalaxyBase
             Stars.Add(star);
         }
 
-        foreach (var star in GenerateDisc(starsInDisc, NucleusRadius, NucleusDeviation, GalaxyRadius))
+        foreach (var star in GenerateDisc(starsInDisc, NucleusRadius, NucleusDeviation, galaxyRadius))
         {
             star.Offset(center);
             star.SetColor(star.ConvertTemperature());

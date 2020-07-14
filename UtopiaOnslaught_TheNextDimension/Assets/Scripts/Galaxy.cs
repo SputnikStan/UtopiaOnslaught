@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public class Galaxy : MonoBehaviour
@@ -88,13 +89,11 @@ public class Galaxy : MonoBehaviour
     {
         mRandom = new GalaxyRandom(Seed);
 
-        Generate(GalaxyType, NumberOfStars, Dimensions, Flatness, mStarColorGradient, Spiral_NumberOfArms);
+        Generate(GalaxyType, NumberOfStars, 100, Flatness, mStarColorGradient, Spiral_NumberOfArms);
 
-        float extent = (mGalaxy.GetExtents() * 2);
-        float RoundedDimension = Mathf.Pow(2, Mathf.Ceil(Mathf.Log(extent) / Mathf.Log(2)));
-        float Radius = RoundedDimension / 2;
+        PostProcess();
 
-        GalaxyBounds = new Quadrant(mGalaxy.Stars, transform, transform.position, Radius, LineMaterial, 0);
+        GalaxyBounds = new Quadrant(mGalaxy.Stars, transform, transform.position, mGalaxy.Radius, LineMaterial, 0);
 
         RenderGalaxy();
     }
@@ -105,6 +104,31 @@ public class Galaxy : MonoBehaviour
     //    //DrawGalaxyBounds();
     //}
 
+    void OnGUI()
+    {
+        // Starts an area to draw elements
+        GUILayout.BeginArea(new Rect(10, 10, 400, 100));
+        GUILayout.Label($"Galaxy Seed {Seed}", GUILayout.MinWidth(100), GUILayout.Width(300));
+        GUILayout.Label($"Galaxy Radius {mGalaxy.Radius}", GUILayout.MinWidth(100), GUILayout.Width(300));
+        GUILayout.Label($"Galaxy Dimensions {mGalaxy.Dimension.x},{mGalaxy.Dimension.y},{mGalaxy.Dimension.z}", GUILayout.MinWidth(100), GUILayout.Width(300));
+        //        GUILayout.Button("Click me");
+        //        GUILayout.Button("Or me");
+        GUILayout.EndArea();
+    }
+
+    private void PostProcess()
+    {
+        mGalaxy.ScaleGalaxy(GalaxyRadius);
+        float extent = (mGalaxy.GetExtents() * 2);
+        float RoundedDimension = Mathf.Pow(2, Mathf.Ceil(Mathf.Log(extent) / Mathf.Log(2)));
+        mGalaxy.Radius = RoundedDimension / 2;
+
+        mGalaxy.GenrateStarColor(mGalaxy.Radius);
+
+        //mGalaxy.Dimension = new Vector3(mGalaxy.Radius, mGalaxy.Radius, mGalaxy.Radius);
+    }
+
+    
     public void Generate(GALXAYTYPES inGalaxyType, int inNumberOfStars, float inGalaxyRadius, float inFlatness, Texture2D inStarColour, int inNumberOfArms = 0)
     {
         StarColor = inStarColour;
@@ -114,21 +138,21 @@ public class Galaxy : MonoBehaviour
         {
             case GALXAYTYPES.Cluster:
                 {
-                    mGalaxy = new Cluster(mRandom, NumberOfStars, new Vector3(GalaxyRadius, GalaxyRadius, GalaxyRadius), Cluster_RadiusMin, Cluster_RadiusMax, Cluster_CountMin, Cluster_CountMax, Cluster_Flatness);
+                    mGalaxy = new Cluster(mRandom, NumberOfStars, new Vector3(inGalaxyRadius, inGalaxyRadius, inGalaxyRadius), Cluster_RadiusMin, Cluster_RadiusMax, Cluster_CountMin, Cluster_CountMax, Cluster_Flatness);
                 }
                 break;
             case GALXAYTYPES.Sphere:
                 {
-                    mGalaxy = new Cluster(mRandom, NumberOfStars, new Vector3(GalaxyRadius, GalaxyRadius, GalaxyRadius), Sphere_RadiusMin, Sphere_RadiusMax, 1, 1, Sphere_Flatness);
+                    mGalaxy = new Cluster(mRandom, NumberOfStars, new Vector3(inGalaxyRadius, inGalaxyRadius, inGalaxyRadius), Sphere_RadiusMin, Sphere_RadiusMax, 1, 1, Sphere_Flatness);
                 }
                 break;
 
             case GALXAYTYPES.Spiral:
                 {
-                    float NucleusRadius = GalaxyRadius * Spiral_NucleusRadius;
-                    float ArmRadius = NucleusRadius * Spiral_ArmRadius;
+                    float NucleusRadius = inGalaxyRadius * Spiral_NucleusRadius;
+                    float ArmRadius = inGalaxyRadius * Spiral_ArmRadius;
 
-                    mGalaxy = new Spiral(mRandom, NumberOfStars, new Vector3(GalaxyRadius, GalaxyRadius, GalaxyRadius),
+                    mGalaxy = new Spiral(mRandom, NumberOfStars, new Vector3(inGalaxyRadius, inGalaxyRadius, inGalaxyRadius),
                                         Spiral_NumberOfArms, Spiral_StarsInNucleus, Spiral_StarsInArms,
                                         NucleusRadius, Spiral_NucleusRadiusDeviation,
                                         ArmRadius, Spiral_ArmRadiusDeviation, Spiral_ArmSpread,
@@ -137,7 +161,7 @@ public class Galaxy : MonoBehaviour
                 break;
             case GALXAYTYPES.Sombrero:
                 {
-                    mGalaxy = new Sombrero(mRandom, NumberOfStars, new Vector3(GalaxyRadius, GalaxyRadius, GalaxyRadius), StarsInNucleus, StarsInRing,
+                    mGalaxy = new Sombrero(mRandom, NumberOfStars, new Vector3(inGalaxyRadius, inGalaxyRadius, inGalaxyRadius), StarsInNucleus, StarsInRing,
                                         NucleusRadius, OuterRadius,
                                         RingRadius, RingSpread,
                                         Flatness);

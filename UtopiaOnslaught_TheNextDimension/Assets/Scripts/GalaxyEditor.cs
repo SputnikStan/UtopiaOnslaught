@@ -25,7 +25,7 @@ public class GalaxyEditor : Editor
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.PrefixLabel("Galaxy Radius");
-        myScript.GalaxyRadius = (int)EditorGUILayout.Slider(myScript.GalaxyRadius, 100, 10000, GUILayout.Width(200));
+        myScript.GalaxyRadius = (int)EditorGUILayout.Slider(myScript.GalaxyRadius, 1, 1000, GUILayout.Width(200));
         EditorGUILayout.EndHorizontal();
 
 
@@ -114,7 +114,7 @@ public class GalaxyEditor : Editor
 
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.PrefixLabel("Arm Spread");
-                    myScript.Spiral_ArmSpread = EditorGUILayout.Slider(myScript.Spiral_ArmSpread, 0, 2, GUILayout.Width(200));
+                    myScript.Spiral_ArmSpread = EditorGUILayout.Slider(myScript.Spiral_ArmSpread, 0, 5, GUILayout.Width(200));
                     EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.BeginHorizontal();

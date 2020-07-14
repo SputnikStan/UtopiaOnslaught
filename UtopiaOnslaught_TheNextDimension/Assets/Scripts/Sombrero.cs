@@ -49,7 +49,7 @@ public class Sombrero : GalaxyBase
 
         Vector3 disc = new Vector3(GalaxyRadius.x, NucleusRadius * Flatness, GalaxyRadius.z);
 
-        foreach (var star in GenerateDisc(starsInDisc, NucleusRadius, NucleusDeviation, disc))
+        foreach (var star in GenerateDisc(starsInDisc, NucleusRadius, NucleusDeviation, GalaxyRadius.magnitude))
         {
             star.Offset(center);
             star.SetColor(star.ConvertTemperature());

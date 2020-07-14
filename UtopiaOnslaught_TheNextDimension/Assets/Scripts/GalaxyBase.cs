@@ -8,6 +8,9 @@ abstract public class GalaxyBase
 
     public Vector3 Position;
 
+    public float Radius;
+    public Vector3 Dimension;
+
     public int NumberOfStars { get; set; }
     public Vector3 GalaxyRadius { get; set; }
 
@@ -80,7 +83,7 @@ abstract public class GalaxyBase
         return result;
     }
 
-    public List<Star> GenerateDisc(int inStarCount, float nucleusRadius, float InnerNucleusDeviation, Vector3 inDimensions)
+    public List<Star> GenerateDisc(int inStarCount, float nucleusRadius, float InnerNucleusDeviation, float inRadius, float inFlatness = 1.0f)
     { 
         List<Star> result = new List<Star>();
 
@@ -90,14 +93,14 @@ abstract public class GalaxyBase
         {
             Vector3 starPos = GalaxyRand.InsideUnitSphere(true);
 
-            starPos.x *= inDimensions.x;
-            starPos.y *= inDimensions.y;
-            starPos.z *= inDimensions.z;
+            starPos.x *= inRadius;
+            starPos.y *= (inRadius * inFlatness);
+            starPos.z *= inRadius;
 
             float distance = starPos.magnitude;
             if (distance > (nucleusRadius * InnerNucleusDeviation))
             {
-                float t = CalculateTemperature(starPos.magnitude, inDimensions.magnitude);
+                float t = CalculateTemperature(starPos.magnitude, inRadius);
 
                 Color starColor = Color.magenta;
                 Star star = new Star(GenerateStarName.Generate(GalaxySystemRand), starPos, starColor, t);
@@ -155,7 +158,7 @@ abstract public class GalaxyBase
 
         foreach (Star star in Stars)
         {
-            float distance = Vector3.Distance(Position, star.Position);
+            float distance = Mathf.Abs(Vector3.Distance(Position, star.Position));
             if(distance > maxDistance)
             {
                 maxDistance = distance;
@@ -165,15 +168,47 @@ abstract public class GalaxyBase
         return maxDistance;
     }
 
+    public void ScaleGalaxy(float inScale)
+    {
+        Vector3 dimensions = Vector3.zero;
+
+        foreach (Star star in Stars)
+        {
+            Vector3 delta = (star.Position - Position);
+            float distance = delta.magnitude;
+            star.Position = ((delta.normalized) * (distance * inScale));
+
+            if(dimensions.x < Mathf.Abs(delta.x) )
+            {
+                dimensions.x = Mathf.Abs(delta.x);
+            }
+
+            if (dimensions.y < Mathf.Abs(delta.y))
+            {
+                dimensions.y = Mathf.Abs(delta.y);
+            }
+
+            if (dimensions.z < Mathf.Abs(delta.z))
+            {
+                dimensions.z = Mathf.Abs(delta.z);
+            }
+        }
+
+        Dimension = dimensions;
+    }
+
     public void GenrateStarColor()
     {
-        float maxDistance = GetExtents();
+        GenrateStarColor(GetExtents());
+    }
 
+    public void GenrateStarColor(float inMaxDistance)
+    {
         foreach (Star star in Stars)
         {
             float distance = Vector3.Distance(Position, star.Position);
 
-            star.mTemperature = CalculateTemperature(distance, maxDistance);
+            star.mTemperature = CalculateTemperature(distance, inMaxDistance);
             star.SetColor(star.ConvertTemperature());
         }
     }

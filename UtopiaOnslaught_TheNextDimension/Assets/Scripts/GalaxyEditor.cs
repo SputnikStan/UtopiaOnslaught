@@ -2,12 +2,29 @@
 using UnityEditor;
 using System;
 
-[CustomEditor(typeof(Galaxy))]
+[CustomEditor(typeof(GalaxyGeneration))]
 public class GalaxyEditor : Editor
 {
+    SerializedProperty m_StarObjects;
+    SerializedProperty m_DustObjects;
+
+    void OnEnable()
+    {
+        // Fetch the objects from the GameObject script to display in the inspector
+        m_StarObjects = serializedObject.FindProperty("mGalaxyParticles");
+        m_DustObjects = serializedObject.FindProperty("mGalaxyDust");
+    }
+
     override public void OnInspectorGUI()
     {
-        Galaxy myScript = target as Galaxy;
+        GalaxyGeneration myScript = target as GalaxyGeneration;
+
+        //The variables and GameObject from the MyGameObject script are displayed in the Inspector with appropriate labels
+        EditorGUILayout.PropertyField(m_StarObjects, new GUIContent("Star Objects"), GUILayout.Height(20));
+        EditorGUILayout.PropertyField(m_DustObjects, new GUIContent("Dust Objects"), GUILayout.Height(20));
+
+        // Apply changes to the serializedProperty - always do this at the end of OnInspectorGUI.
+        serializedObject.ApplyModifiedProperties();
 
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.PrefixLabel("Seed");
@@ -29,32 +46,124 @@ public class GalaxyEditor : Editor
         EditorGUILayout.EndHorizontal();
 
 
-        myScript.GalaxyType =(Galaxy.GALXAYTYPES) EditorGUILayout.EnumPopup(myScript.GalaxyType, GUILayout.MinWidth(100), GUILayout.Width(100));
+        //myScript.GalaxyType =(GalaxyGeneration.GALXAYTYPES) EditorGUILayout.EnumPopup(myScript.GalaxyType, GUILayout.MinWidth(100), GUILayout.Width(100));
 
+        EditorGUI.indentLevel++;
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel("Cluster Min");
+        int cluserMin = (int)EditorGUILayout.Slider(myScript.Cluster_CountMin, 1, 50, GUILayout.Width(200));
+        if (cluserMin < myScript.Cluster_CountMax)
+            myScript.Cluster_CountMin = cluserMin;
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel("Cluster Max");
+        int cluserMax = (int)EditorGUILayout.Slider(myScript.Cluster_CountMax, 1, 50, GUILayout.Width(200));
+        if (cluserMax > myScript.Cluster_CountMin)
+            myScript.Cluster_CountMax = cluserMax;
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel("Cluster Radius Min");
+        float radiusMin = EditorGUILayout.Slider(myScript.Cluster_RadiusMin, 0, 1, GUILayout.Width(200));
+        if (radiusMin < myScript.Cluster_RadiusMax)
+            myScript.Cluster_RadiusMin = radiusMin;
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel("Cluster Radius Max");
+        float radiusMax = EditorGUILayout.Slider(myScript.Cluster_RadiusMax, 0, 1, GUILayout.Width(200));
+        if (radiusMax > myScript.Cluster_RadiusMin)
+            myScript.Cluster_RadiusMax = radiusMax;
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel("Flatness");
+        myScript.Cluster_Flatness = EditorGUILayout.Slider(myScript.Cluster_Flatness, 0, 1, GUILayout.Width(200));
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel("DensityMean");
+        myScript.Cluster_DensityMean = EditorGUILayout.Slider(myScript.Cluster_DensityMean, 0, 1, GUILayout.Width(200));
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel("DensityDeviation");
+        myScript.Cluster_DensityDeviation = EditorGUILayout.Slider(myScript.Cluster_DensityDeviation, 0, 1, GUILayout.Width(200));
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginVertical();
+
+        myScript.Cluster_UniformDeviation = EditorGUILayout.BeginToggleGroup("Enable Devivation", myScript.Cluster_UniformDeviation);
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("DeviationX");
+            myScript.Cluster_DeviationX = EditorGUILayout.Slider(myScript.Cluster_DeviationX, 0, 1, GUILayout.Width(200));
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("DeviationY");
+            myScript.Cluster_DeviationY = EditorGUILayout.Slider(myScript.Cluster_DeviationY, 0, 1, GUILayout.Width(200));
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("DeviationZ");
+            myScript.Cluster_DeviationZ = EditorGUILayout.Slider(myScript.Cluster_DeviationZ, 0, 1, GUILayout.Width(200));
+            EditorGUILayout.EndHorizontal();
+        EditorGUILayout.EndToggleGroup();
+
+        if(myScript.Cluster_UniformDeviation == false)
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.PrefixLabel("Deviation Unified");
+            myScript.Cluster_DeviationX =
+                myScript.Cluster_DeviationY =
+                    myScript.Cluster_DeviationZ = EditorGUILayout.Slider(myScript.Cluster_DeviationX, 0, 1, GUILayout.Width(200));
+            EditorGUILayout.EndHorizontal();
+        }
+
+        EditorGUILayout.EndVertical();
+
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.PrefixLabel("Stars In Nucleus");
+        myScript.Cluster_StarsInNucleus = EditorGUILayout.Slider(myScript.Cluster_StarsInNucleus, 0, 1, GUILayout.Width(200));
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUI.indentLevel--;
+
+/*
         switch (myScript.GalaxyType)
         {
-            case Galaxy.GALXAYTYPES.Cluster:
+            case GalaxyGeneration.GALXAYTYPES.Cluster:
                 {
                     EditorGUI.indentLevel++;
 
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.PrefixLabel("Cluster Min");
-                    myScript.Cluster_CountMin = EditorGUILayout.IntField(myScript.Cluster_CountMin, GUILayout.MinWidth(100), GUILayout.Width(100));
+                    int cluserMin = (int)EditorGUILayout.Slider(myScript.Cluster_CountMin, 1, 50, GUILayout.Width(200));
+                    if (cluserMin < myScript.Cluster_CountMax)
+                        myScript.Cluster_CountMin = cluserMin;
                     EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.PrefixLabel("Cluster Max");
-                    myScript.Cluster_CountMax = EditorGUILayout.IntField(myScript.Cluster_CountMax, GUILayout.MinWidth(100), GUILayout.Width(100));
+                    int cluserMax = (int)EditorGUILayout.Slider(myScript.Cluster_CountMax, 1, 50, GUILayout.Width(200));
+                    if (cluserMax > myScript.Cluster_CountMin)
+                        myScript.Cluster_CountMax = cluserMax;
                     EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.PrefixLabel("Cluster Radius Min");
-                    myScript.Cluster_RadiusMin = EditorGUILayout.FloatField(myScript.Cluster_RadiusMin, GUILayout.MinWidth(100), GUILayout.Width(100));
+                    float radiusMin = EditorGUILayout.Slider(myScript.Cluster_RadiusMin, 0, 1, GUILayout.Width(200));
+                    if (radiusMin < myScript.Cluster_RadiusMax)
+                        myScript.Cluster_RadiusMin = radiusMin;
                     EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.PrefixLabel("Cluster Radius Max");
-                    myScript.Cluster_RadiusMax = EditorGUILayout.FloatField(myScript.Cluster_RadiusMax, GUILayout.MinWidth(100), GUILayout.Width(100));
+                    float radiusMax = EditorGUILayout.Slider(myScript.Cluster_RadiusMax, 0, 1, GUILayout.Width(200));
+                    if (radiusMax > myScript.Cluster_RadiusMin)
+                        myScript.Cluster_RadiusMax = radiusMax;
                     EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.BeginHorizontal();
@@ -65,18 +174,22 @@ public class GalaxyEditor : Editor
                     EditorGUI.indentLevel--;
                 }
                 break;
-            case Galaxy.GALXAYTYPES.Sphere:
+            case GalaxyGeneration.GALXAYTYPES.Sphere:
                 {
                     EditorGUI.indentLevel++;
 
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.PrefixLabel("Cluster Radius Min");
-                    myScript.Sphere_RadiusMin = EditorGUILayout.FloatField(myScript.Sphere_RadiusMin, GUILayout.MinWidth(100), GUILayout.Width(100));
+                    float radiusMin = EditorGUILayout.Slider(myScript.Sphere_RadiusMin, 0, 1, GUILayout.Width(200));
+                    if (radiusMin < myScript.Sphere_RadiusMax)
+                        myScript.Sphere_RadiusMin = radiusMin;
                     EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.PrefixLabel("Cluster Radius Max");
-                    myScript.Sphere_RadiusMax = EditorGUILayout.FloatField(myScript.Sphere_RadiusMax, GUILayout.MinWidth(100), GUILayout.Width(100));
+                    float radiusMax = EditorGUILayout.Slider(myScript.Sphere_RadiusMax, 0, 1, GUILayout.Width(200));
+                    if (radiusMax > myScript.Sphere_RadiusMin)
+                        myScript.Sphere_RadiusMax = radiusMax;
                     EditorGUILayout.EndHorizontal();
 
                     EditorGUILayout.BeginHorizontal();
@@ -88,7 +201,7 @@ public class GalaxyEditor : Editor
                     EditorGUI.indentLevel--;
                 }
                 break;
-            case Galaxy.GALXAYTYPES.Spiral:
+            case GalaxyGeneration.GALXAYTYPES.Spiral:
                 {
                     EditorGUI.indentLevel++;
 
@@ -137,6 +250,31 @@ public class GalaxyEditor : Editor
                     myScript.Spiral_Flatness = EditorGUILayout.Slider(myScript.Spiral_Flatness, 0, 1, GUILayout.Width(200));
                     EditorGUILayout.EndHorizontal();
 
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.PrefixLabel("DensityMean");
+                    myScript.DensityMean = EditorGUILayout.Slider(myScript.DensityMean, 0, 1, GUILayout.Width(200));
+                    EditorGUILayout.EndHorizontal();
+
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.PrefixLabel("DensityDeviation");
+                    myScript.DensityDeviation = EditorGUILayout.Slider(myScript.DensityDeviation, 0, 1, GUILayout.Width(200));
+                    EditorGUILayout.EndHorizontal();
+
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.PrefixLabel("DeviationX");
+                    myScript.DeviationX = EditorGUILayout.Slider(myScript.DeviationX, 0, 1, GUILayout.Width(200));
+                    EditorGUILayout.EndHorizontal();
+
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.PrefixLabel("DeviationY");
+                    myScript.DeviationY = EditorGUILayout.Slider(myScript.DeviationY, 0, 1, GUILayout.Width(200));
+                    EditorGUILayout.EndHorizontal();
+
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.PrefixLabel("DeviationZ");
+                    myScript.DeviationZ = EditorGUILayout.Slider(myScript.DeviationZ, 0, 1, GUILayout.Width(200));
+                    EditorGUILayout.EndHorizontal();
+
                     EditorGUI.indentLevel--;
                 }
                 break;
@@ -144,6 +282,7 @@ public class GalaxyEditor : Editor
                 break;
 
         }
-
+*/
     }
 }
+

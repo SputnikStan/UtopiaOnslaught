@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Spiral : GalaxyBase
 {
-
+    public float GalaxyRadius = 100;
     public int NumberOfArms { get; set; }
     public float StarsInArms { get; set; }
     public float StarsInNucleus { get; set; }
@@ -15,12 +15,21 @@ public class Spiral : GalaxyBase
     public float ArmRadiusDeviation { get; set; }
     public float ArmSpread { get; set; }
     public float Flatness { get; set; }
+    public float DensityMean { get; set; }
+    public float DensityDeviation { get; set; }
+    public float DeviationX { get; set; }
+    public float DeviationY { get; set; }
+    public float DeviationZ { get; set; }
 
-    public Spiral(GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, int inNumberOfArms, float inStarsInNucleus, float inStarsInArms, 
+    public Spiral(GalaxyRandom inRandom, int inNumberOfStars, float inGalaxyRadius, int inNumberOfArms, float inStarsInNucleus, float inStarsInArms, 
                     float inNucleusRadius, float inNucleusDeviation = 0.25f, 
                     float inArmRadius = 5f, float inArmRadiusDeviation = 0.9f, float inArmSpread = 0.5f, 
-                    float inFlatness = 0.25f) 
-        : base(inRandom, inNumberOfStars, inGalaxyRadius)
+                    float inFlatness = 0.25f,
+                    float _densityMean = 0.0000025f, float _densityDeviation = 0.000001f,
+                    float _deviationX = 0.0000025f,
+                    float _deviationY = 0.0000025f,
+                    float _deviationZ = 0.0000025f) 
+        : base(inRandom)
     {
         NumberOfArms = inNumberOfArms;
         StarsInNucleus = inStarsInNucleus;
@@ -32,11 +41,21 @@ public class Spiral : GalaxyBase
         ArmSpread = inArmSpread;
         Flatness = inFlatness;
 
-        Generate();
+        DensityMean = _densityMean;
+        DensityDeviation = _densityDeviation;
+        DeviationX = _deviationX;
+        DeviationY = _deviationY;
+        DeviationZ = _deviationZ;
+
+    Generate();
     }
 
-    override public void Generate( )
+    override public List<Star> Generate( )
     {
+        List<Star> result = new List<Star>();
+
+        int NumberOfStars = 30000;
+
         int starsInArms = (int)(NumberOfStars * StarsInArms);
         int starsinNucleus = (int)(( NumberOfStars - starsInArms) * StarsInNucleus);
         int starsInDisc = (int)(NumberOfStars - starsInArms - starsinNucleus);
@@ -46,37 +65,22 @@ public class Spiral : GalaxyBase
         float angleIncrement = (float)(2 * Mathf.PI / NumberOfArms);
         float Angle = 20;
         float AngleOffset = 0;
-        float galaxyRadius = GalaxyRadius.magnitude;
+        float galaxyRadius = GalaxyRadius;
 
         for (int i = 0; i < NumberOfArms; i++)
         {
-            foreach (var star in GenerateArm(starsInArms, Angle, AngleOffset, galaxyRadius, NucleusRadius * NucleusDeviation, ArmRadius, ArmSpread, Flatness))
+            foreach (Star star in GenerateArm(starsInArms, Angle, AngleOffset, galaxyRadius, NucleusRadius * NucleusDeviation, ArmRadius, ArmSpread, Flatness))
             {
                 star.Offset(center);
                 //star.Swirl(Vector3.up, Swirl * 5);
                 //star.SetColor(star.ConvertTemperature());
-                Stars.Add(star);
+                result.Add(star);
             }
 
             AngleOffset += angleIncrement;
         }
 
-        Vector3 disc = new Vector3(GalaxyRadius.x, GalaxyRadius.y, GalaxyRadius.z);
-
-        foreach (var star in GenerateDisc(starsInDisc, NucleusRadius, NucleusDeviation, galaxyRadius, Flatness))
-        {
-            star.Offset(center);
-            star.SetColor(star.ConvertTemperature());
-            Stars.Add(star);
-        }
-
-        foreach (var star in GenerateNucleus(starsinNucleus, new Vector3( NucleusRadius, NucleusRadius, NucleusRadius), false))
-        {
-            star.Offset(center);
-            star.SetColor(star.ConvertTemperature());
-            Stars.Add(star);
-        }
-
+        return result;
     }
 
     private List<Star> GenerateArm(int inStarCount, float inAngle = 2.0f, float inAngleOffset = 0f, float inMaxRadius = 45, float nucleusRadius = 0.25f, float inArmRadius = 5, float inArmSpread = 1.0f, float inFlatness = 1.0f)

@@ -14,11 +14,11 @@ public class Disc : GalaxyBase
     public float ArmSpread { get; set; }
     public float Flatness { get; set; }
 
-    public Disc(GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, int inNumberOfArms, float inStarsInNucleus, float inStarsInArms,
+    public Disc(GalaxyRandom inRandom, int inNumberOfStars, float inGalaxyRadius, int inNumberOfArms, float inStarsInNucleus, float inStarsInArms,
                     float inNucleusRadius, float inNucleusDeviation = 0.25f,
                     float inArmRadius = 5f, float inArmRadiusDeviation = 0.9f, float inArmSpread = 0.5f,
                     float inFlatness = 0.25f)
-        : base(inRandom, inNumberOfStars, inGalaxyRadius)
+        : base(inRandom)
     {
         NumberOfArms = inNumberOfArms;
         StarsInNucleus = inStarsInNucleus;
@@ -33,9 +33,12 @@ public class Disc : GalaxyBase
         Generate();
     }
 
-    override public void Generate( )
+    override public List<Star> Generate()
     {
-        float galaxyRadius = GalaxyRadius.magnitude;
+        List<Star> result = new List<Star>();
+
+        /*
+        float galaxyRadius = GalaxyRadius;
         int starsinNucleus = (int)(NumberOfStars * StarsInNucleus);
         int starsInDisc = NumberOfStars - starsinNucleus;
 
@@ -54,5 +57,9 @@ public class Disc : GalaxyBase
             star.SetColor(star.ConvertTemperature());
             Stars.Add(star);
         }
+        */
+
+        return result;
     }
 }
+ 

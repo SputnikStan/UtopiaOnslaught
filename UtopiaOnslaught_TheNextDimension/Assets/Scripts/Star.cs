@@ -76,6 +76,8 @@ public class Star
         Position = Quaternion.AngleAxis(a, axis) * Position;
     }
 
+
+
     public void SetColor(Texture2D inStarColour, float inSize)
     {
         Color starColor = Color.white;
@@ -108,11 +110,23 @@ public class Star
         return new Color((float)srgb.R, (float)srgb.G, (float)srgb.B);
     }
 
-    public Color GenerateStarColor(Random random)
+    public Color GenerateStarColor(System.Random inRand)
     {
-        var temp = mRandom.sm_Rand.NormallyDistributedSingle(7000, 6000, 1000, 40000);
+        float temp = inRand.NormallyDistributedSingle(7000, 6000, 1000, 40000);
 
         return ConvertTemperature(temp);
+    }
+
+    public float CalculateTemperature(System.Random rand, float inMaxDistance)
+    {
+        float d = Position.magnitude / inMaxDistance;
+        float m = d * 2000.0f + (1 - d) * 15000.0f;
+
+        return rand.NormallyDistributedSingle(4000, m, 1000, 40000);
+    }
+    public float CalculateTemperature(float inMaxDistance)
+    {
+        return CalculateTemperature(new System.Random(), inMaxDistance);
     }
 
     SolarObjects Generate_SolarSystem()

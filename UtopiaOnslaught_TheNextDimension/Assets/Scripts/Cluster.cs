@@ -2,59 +2,103 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Cluster : GalaxyBase
+public class Cluster :GalaxyBase
 {
-    public int ClusterMax { get; set; }
-    public int ClusterMin { get; set; }
+    #region  Cluster Variables
 
+    public float GalaxyRadius = 100;
 
-    public float ClusterRadiusMax { get; set; }
-    public float ClusterRadiusMin { get; set; }
+    public int CountMin = 3;
+    public int CountMax = 7;
+    public int ClusterCount = 0;
 
-    public float ClusterFlatness { get; set; }
+    public float RadiusMin = 0.25f;
+    public float RadiusMax = 0.5f;
 
-    public Cluster( GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, float inClusterRadiusMin, float inClusterRadiusMax, int inClusterMin = 5, int inClusterMax = 10, float inFlatness = 1.0f)
-     : base(inRandom, inNumberOfStars, inGalaxyRadius)
+    public float DensityMean = 0.0000025f;
+    public float DensityDeviation = 0.000001f;
+    public float DeviationX = 0.0000025f;
+    public float DeviationY = 0.0000025f;
+    public float DeviationZ = 0.0000025f;
+
+    public float StarsInNucleus = 1.0f;
+
+    #endregion
+
+    public Cluster(
+
+            GalaxyRandom inGalaxyRand,
+
+            float inGalaxyRadius = 100,
+
+            int inCountMin = 3,
+            int inCountMax = 7,
+
+            float inRadiusMin = 0.25f,
+            float inRadiusMax = 0.5f,
+
+            float inDensityMean = 0.0000025f,
+            float inDensityDeviation = 0.000001f,
+            float inDeviationX = 0.0000025f,
+            float inDeviationY = 0.0000025f,
+            float inDeviationZ = 0.0000025f,
+
+            float inStarsInNucleus = 1.0f
+        )
+         : base(inGalaxyRand)
     {
-        ClusterMin = inClusterMin;
-        ClusterMax = inClusterMax;
-        ClusterRadiusMin = inGalaxyRadius.magnitude * inClusterRadiusMin;
-        ClusterRadiusMax = inGalaxyRadius.magnitude * inClusterRadiusMax;
+        GalaxyRadius = inGalaxyRadius;
 
-        ClusterFlatness = inFlatness;
+        CountMin = inCountMin;
+        CountMax = inCountMax;
 
-        Generate();
+        RadiusMin = inRadiusMin;
+        RadiusMax = inRadiusMax;
+
+        DensityMean = inDensityMean;
+        DensityDeviation = inDensityDeviation;
+        DeviationX = inDeviationX;
+        DeviationY = inDeviationY;
+        DeviationZ = inDeviationZ;
+
+        StarsInNucleus = inStarsInNucleus;
     }
 
-    override public void Generate()
+    override public List<Star> Generate()
     {
-        int totalStars = NumberOfStars;
+        Color[] clusterColor = { Color.red, Color.blue, Color.cyan, Color.gray, Color.green, Color.magenta, Color.white, Color.yellow };
+        Vector3[] offsets = { new Vector3 ( 75, 75, 75 ), new Vector3(-75, 75, 75) , new Vector3(75, -75, -75), new Vector3(-75, -75, -75) };
+        List<Star> result = new List<Star>();
 
-        int numberOfClusters = GalaxyRand.Range(ClusterMin, ClusterMax);
+        ClusterCount = GalaxyRand.Range(CountMin, CountMax);
  
-        int starsInCluster = (int)(NumberOfStars / numberOfClusters);
-        float galaxyRadius = GalaxyRadius.magnitude; // GalaxyHelpers.GetMax(GalaxyRadius);
+        Vector3 centre = Vector3.zero;
 
-        Vector3 center = Vector3.zero;
-
-        for (int i=0; i< numberOfClusters; i++)
+        for (int i=0; i< ClusterCount; i++)
         {
-            float clusterRadius = GalaxyRand.Range(ClusterRadiusMin, ClusterRadiusMax);
+            float clusterRadius = (GalaxyRadius * GalaxyRand.Range(RadiusMin, RadiusMax));
 
-            float centreScale = GalaxyRand.Range(0, (galaxyRadius - clusterRadius));
-            center.x *= centreScale;
-            center.y *= centreScale;
-            center.z *= centreScale;
+            float centreScale = GalaxyRand.Range(0, GalaxyRadius- clusterRadius);
+            centre.x *= centreScale;
+            centre.y *= centreScale;
+            centre.z *= centreScale;
 
-            foreach (Star star in GenerateNucleus(starsInCluster, new Vector3(clusterRadius,clusterRadius, clusterRadius), false, ClusterFlatness))
+            Color starColor = clusterColor[(i % 8)];
+
+            foreach (Star star in GenerateSphere(clusterRadius, DensityMean, DensityDeviation, DeviationX, DeviationY, DeviationZ, StarsInNucleus))
             {
-                star.Offset(center);
+                //star.Offset(offsets[(i % 4)]);
+                star.Offset(centre);
                 star.SetColor(star.ConvertTemperature());
-                Stars.Add(star);
-                totalStars--;
+                //star.SetColor(starColor);
+                result.Add(star);
             }
 
-            center = GalaxyRand.InsideUnitSphere(true);
+            centre = GalaxyRand.InsideUnitSphere(true);
         }
+
+        return result;
     }
+
+
 }

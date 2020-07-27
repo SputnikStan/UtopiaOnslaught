@@ -14,16 +14,16 @@ public class Sombrero : GalaxyBase
     public float RingSpread { get; set; }
     public float Flatness { get; set; }
 
-    public Sombrero(GalaxyRandom inRandom, int inNumberOfStars, Vector3 inGalaxyRadius, float inStarsInNucleus, float inStarsInRings,
+    public Sombrero(GalaxyRandom inRandom, int inNumberOfStars, float inGalaxyRadius, float inStarsInNucleus, float inStarsInRings,
                     float inNucleusRadius, float inOuterRadius = 0.25f,
                     float inRingRadius = 5f, float inRingSpread = 0.5f,
                     float inFlatness = 0.25f)
-        : base(inRandom, inNumberOfStars, inGalaxyRadius)
+        : base(inRandom)
     {
         StarsInNucleus = inStarsInNucleus;
         StarsInRings = inStarsInRings;
         NucleusRadius = inNucleusRadius;
-        OuterRadius = inGalaxyRadius.magnitude * inOuterRadius;
+        OuterRadius = inGalaxyRadius * inOuterRadius;
         RingRadius = inRingRadius;
         RingSpread = inRingSpread;
         Flatness = inFlatness;
@@ -31,15 +31,18 @@ public class Sombrero : GalaxyBase
         Generate();
     }
 
-    override public void Generate( )
+    override public List<Star> Generate()
     {
+        List<Star> result = new List<Star>();
+
+        /*
         int starsInRing = (int)(NumberOfStars * StarsInRings);
         int starsinNucleus = (int)((NumberOfStars - starsInRing) * StarsInNucleus);
         int starsInDisc = (int)(NumberOfStars - starsInRing - starsinNucleus);
 
         Vector3 center = Vector3.zero;
 
-        foreach (var star in GenerateRing(starsInRing, OuterRadius, RingRadius, GalaxyBase.GetMax(GalaxyRadius), NucleusRadius * NucleusDeviation, RingRadius, RingSpread))
+        foreach (var star in GenerateRing(starsInRing, OuterRadius, RingRadius, GalaxyRadius, NucleusRadius * NucleusDeviation, RingRadius, RingSpread))
         {
             star.Offset(center);
             //star.Swirl(Vector3.up, Swirl * 5);
@@ -47,9 +50,9 @@ public class Sombrero : GalaxyBase
             Stars.Add(star);
         }
 
-        Vector3 disc = new Vector3(GalaxyRadius.x, NucleusRadius * Flatness, GalaxyRadius.z);
+        Vector3 disc = new Vector3(GalaxyRadius, NucleusRadius * Flatness, GalaxyRadius);
 
-        foreach (var star in GenerateDisc(starsInDisc, NucleusRadius, NucleusDeviation, GalaxyRadius.magnitude))
+        foreach (var star in GenerateDisc(starsInDisc, NucleusRadius, NucleusDeviation, GalaxyRadius))
         {
             star.Offset(center);
             star.SetColor(star.ConvertTemperature());
@@ -62,7 +65,9 @@ public class Sombrero : GalaxyBase
             star.SetColor(star.ConvertTemperature());
             Stars.Add(star);
         }
+                */
 
+        return result;
     }
 
     private List<Star> GenerateRing(int inStarCount, float inOuterRadius = 2.0f, float inRingRadius = 5f, float inMaxRadius = 45, float nucleusRadius = 0.25f, float inArmRadius = 5, float inArmSpread = 1.0f)
@@ -109,3 +114,4 @@ public class Sombrero : GalaxyBase
         return result;
     }
 }
+ 

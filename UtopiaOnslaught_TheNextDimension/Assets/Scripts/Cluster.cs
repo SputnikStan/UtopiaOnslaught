@@ -78,7 +78,7 @@ public class Cluster :GalaxyBase
         {
             float clusterRadius = (GalaxyRadius * GalaxyRand.Range(RadiusMin, RadiusMax));
 
-            float centreScale = GalaxyRand.Range(0, GalaxyRadius- clusterRadius);
+            float centreScale = GalaxyRand.Range(0, (clusterRadius));
             centre.x *= centreScale;
             centre.y *= centreScale;
             centre.z *= centreScale;

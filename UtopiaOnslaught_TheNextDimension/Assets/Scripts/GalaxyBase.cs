@@ -20,7 +20,7 @@ abstract public class GalaxyBase
 
     public abstract List<Star> Generate();
 
-    public List<Star> GenerateSphere(float _size,
+    public List<Star> GenerateSphere(float inRadius,
             float _densityMean = 0.0000025f, float _densityDeviation = 0.000001f,
             float _deviationX = 0.0000025f,
             float _deviationY = 0.0000025f,
@@ -35,35 +35,32 @@ abstract public class GalaxyBase
 
         float deviation = Mathf.Abs(GalaxySystemRand.NormallyDistributedSingle(_densityDeviation, _densityMean));
         float density = Mathf.Max(0, deviation);
-        int countMax = Mathf.Max(0, (int)(_size * _size * _size * density));
+        int countMax = Mathf.Max(0, (int)(inRadius * inRadius * inRadius * density));
 
         float count = GalaxySystemRand.Next(countMax);
 
+        float minRadius = (inRadius * inNucleusDeviation);
+
         for (int i = 0; i < count; i++)
         {
-            double part = (double)i / (double)count;
-            part = Math.Pow(part, inNucleusDeviation);
-            float radius = _size * (float)part;
-
-            //           Vector3 pos = new Vector3(
-            //               GalaxySystemRand.NormallyDistributedSingle(_deviationX, 0, -1,1),
-            //               GalaxySystemRand.NormallyDistributedSingle(_deviationY, 0, -1, 1),
-            //               GalaxySystemRand.NormallyDistributedSingle(_deviationZ, 0, , 1)
-            //
-            ////                GalaxySystemRand.NormallyDistributedSingle(_deviationX * _size, 0, 0, 1),
-            ////                GalaxySystemRand.NormallyDistributedSingle(_deviationY * _size, 0, 0, 1),
-            ////                GalaxySystemRand.NormallyDistributedSingle(_deviationZ * _size, 0, 0, 1)
-            //           );
+            float offsetRadius = GalaxyRand.Range(minRadius, inRadius);
 
             Vector3 pos = GalaxyRand.InsideUnitSphere(inUniform);
-            pos.x *= _deviationX * radius;
-            pos.y *= _deviationY * radius;
-            pos.z *= _deviationZ * radius;
 
-//            //pos.Normalize();
-//            pos *= _size;
+            pos.x *= _deviationX * inRadius;
+            pos.y *= _deviationY * inRadius;
+            pos.z *= _deviationZ * inRadius;
 
-            float t = CalculateTemperature(pos.magnitude, _size);
+            if(pos.magnitude < minRadius)
+            {
+                Vector3 norm = Vector3.Normalize(pos);
+
+                pos.x = (pos.x + (_deviationX * (offsetRadius * norm.x)));
+                pos.y = (pos.y + (_deviationY * (offsetRadius * norm.y)));
+                pos.z = (pos.z + (_deviationZ * (offsetRadius * norm.z)));
+            }
+
+            float t = CalculateTemperature(pos.magnitude, inRadius);
 
             Color starColor = Color.magenta;
             result.Add(new Star("Star", pos, starColor, t));

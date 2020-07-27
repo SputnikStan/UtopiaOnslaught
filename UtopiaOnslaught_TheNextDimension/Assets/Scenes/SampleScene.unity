@@ -154,23 +154,23 @@ MonoBehaviour:
   mGalaxyDust: {fileID: 1715175109}
   Seed: 746344576
   NumberOfStars: 50000
-  GalaxyRadius: 1
+  GalaxyRadius: 5
   GalaxyType: 1
-  Cluster_CountMin: 6
-  Cluster_CountMax: 21
-  Cluster_RadiusMin: 0.192
-  Cluster_RadiusMax: 0.483
+  Cluster_CountMin: 4
+  Cluster_CountMax: 9
+  Cluster_RadiusMin: 0.092
+  Cluster_RadiusMax: 0.275
   Cluster_NucleusRadius: 10
   Cluster_NucleusRadiusDeviation: 0.25
   ClusterStarsInNucleus: 0.5
   Cluster_Flatness: 1
   Cluster_UniformDeviation: 0
-  Cluster_DensityMean: 0.058
-  Cluster_DensityDeviation: 0.233
+  Cluster_DensityMean: 0.324
+  Cluster_DensityDeviation: 0.5
   Cluster_DeviationX: 0.792
   Cluster_DeviationY: 0.792
   Cluster_DeviationZ: 0.792
-  Cluster_StarsInNucleus: 0.05
+  Cluster_StarsInNucleus: 0
   Spiral_NumberOfArms: 2
   Spiral_StarsInArms: 0.7
   Spiral_ArmRadius: 0.192
